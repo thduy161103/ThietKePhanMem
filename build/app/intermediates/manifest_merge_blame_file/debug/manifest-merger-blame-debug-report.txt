@@ -13,8 +13,8 @@
 13         to allow setting breakpoints, to provide hot reload, etc.
 14    -->
 15    <uses-permission android:name="android.permission.INTERNET" />
-15-->/Users/nguyenvantuankiet/Desktop/musicapp/android/app/src/debug/AndroidManifest.xml:6:5-66
-15-->/Users/nguyenvantuankiet/Desktop/musicapp/android/app/src/debug/AndroidManifest.xml:6:22-64
+15-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/debug/AndroidManifest.xml:6:5-66
+15-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/debug/AndroidManifest.xml:6:22-64
 16    <!--
 17     Required to query activities that can process text, see:
 18         https://developer.android.com/training/package-visibility and
@@ -23,72 +23,359 @@
 21         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin.
 22    -->
 23    <queries>
-23-->/Users/nguyenvantuankiet/Desktop/musicapp/android/app/src/main/AndroidManifest.xml:39:5-44:15
+23-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/main/AndroidManifest.xml:39:5-44:15
 24        <intent>
-24-->/Users/nguyenvantuankiet/Desktop/musicapp/android/app/src/main/AndroidManifest.xml:40:9-43:18
+24-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/main/AndroidManifest.xml:40:9-43:18
 25            <action android:name="android.intent.action.PROCESS_TEXT" />
-25-->/Users/nguyenvantuankiet/Desktop/musicapp/android/app/src/main/AndroidManifest.xml:41:13-72
-25-->/Users/nguyenvantuankiet/Desktop/musicapp/android/app/src/main/AndroidManifest.xml:41:21-70
+25-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/main/AndroidManifest.xml:41:13-72
+25-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/main/AndroidManifest.xml:41:21-70
 26
 27            <data android:mimeType="text/plain" />
-27-->/Users/nguyenvantuankiet/Desktop/musicapp/android/app/src/main/AndroidManifest.xml:42:13-50
-27-->/Users/nguyenvantuankiet/Desktop/musicapp/android/app/src/main/AndroidManifest.xml:42:19-48
+27-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/main/AndroidManifest.xml:42:13-50
+27-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/main/AndroidManifest.xml:42:19-48
 28        </intent>
-29    </queries>
-30
-31    <application
-32        android:name="android.app.Application"
-33        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-33-->[androidx.core:core:1.6.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/284a410c767ad6c7a2b0ffc8d8d85981/transformed/core-1.6.0/AndroidManifest.xml:24:18-86
-34        android:debuggable="true"
-35        android:icon="@mipmap/ic_launcher"
-36        android:label="musicapp" >
-37        <activity
-38            android:name="com.example.musicapp.MainActivity"
-39            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-40            android:exported="true"
-41            android:hardwareAccelerated="true"
-42            android:launchMode="singleTop"
-43            android:taskAffinity=""
-44            android:theme="@style/LaunchTheme"
-45            android:windowSoftInputMode="adjustResize" >
-46
-47            <!--
-48                 Specifies an Android theme to apply to this Activity as soon as
-49                 the Android process has started. This theme is visible to the user
-50                 while the Flutter UI initializes. After that, this theme continues
-51                 to determine the Window background behind the Flutter UI.
-52            -->
-53            <meta-data
-54                android:name="io.flutter.embedding.android.NormalTheme"
-55                android:resource="@style/NormalTheme" />
-56
-57            <intent-filter>
-58                <action android:name="android.intent.action.MAIN" />
-59
-60                <category android:name="android.intent.category.LAUNCHER" />
-61            </intent-filter>
-62        </activity>
-63        <!--
-64             Don't delete the meta-data below.
-65             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
-66        -->
-67        <meta-data
-68            android:name="flutterEmbedding"
-69            android:value="2" />
-70
-71        <uses-library
-71-->[androidx.window:window:1.0.0-beta04] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/f302e75fb7efd781bcf1a29281c188da/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
-72            android:name="androidx.window.extensions"
-72-->[androidx.window:window:1.0.0-beta04] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/f302e75fb7efd781bcf1a29281c188da/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
-73            android:required="false" />
-73-->[androidx.window:window:1.0.0-beta04] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/f302e75fb7efd781bcf1a29281c188da/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
-74        <uses-library
-74-->[androidx.window:window:1.0.0-beta04] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/f302e75fb7efd781bcf1a29281c188da/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
-75            android:name="androidx.window.sidecar"
-75-->[androidx.window:window:1.0.0-beta04] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/f302e75fb7efd781bcf1a29281c188da/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
-76            android:required="false" />
-76-->[androidx.window:window:1.0.0-beta04] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/f302e75fb7efd781bcf1a29281c188da/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
-77    </application>
-78
-79</manifest>
+29        <intent>
+29-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-12:18
+30            <action android:name="android.support.customtabs.action.CustomTabsService" />
+30-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-90
+30-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:21-87
+31        </intent>
+32    </queries>
+33
+34    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+34-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:26:5-79
+34-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:26:22-76
+35    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+35-->[com.google.android.recaptcha:recaptcha:18.4.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/fb0aaeaad019d5ea41529d887e407bc0/transformed/jetified-recaptcha-18.4.0/AndroidManifest.xml:9:5-98
+35-->[com.google.android.recaptcha:recaptcha:18.4.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/fb0aaeaad019d5ea41529d887e407bc0/transformed/jetified-recaptcha-18.4.0/AndroidManifest.xml:9:22-95
+36
+37    <permission
+37-->[androidx.core:core:1.13.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/fac84cd5ecf1ec88a8c98571217c9350/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+38        android:name="com.example.musicapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+38-->[androidx.core:core:1.13.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/fac84cd5ecf1ec88a8c98571217c9350/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+39        android:protectionLevel="signature" />
+39-->[androidx.core:core:1.13.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/fac84cd5ecf1ec88a8c98571217c9350/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+40
+41    <uses-permission android:name="com.example.musicapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+41-->[androidx.core:core:1.13.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/fac84cd5ecf1ec88a8c98571217c9350/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+41-->[androidx.core:core:1.13.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/fac84cd5ecf1ec88a8c98571217c9350/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+42
+43    <application
+44        android:name="android.app.Application"
+45        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+45-->[androidx.core:core:1.13.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/fac84cd5ecf1ec88a8c98571217c9350/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+46        android:debuggable="true"
+47        android:icon="@mipmap/ic_launcher"
+48        android:label="musicapp" >
+49        <activity
+50            android:name="com.example.musicapp.MainActivity"
+51            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+52            android:exported="true"
+53            android:hardwareAccelerated="true"
+54            android:launchMode="singleTop"
+55            android:taskAffinity=""
+56            android:theme="@style/LaunchTheme"
+57            android:windowSoftInputMode="adjustResize" >
+58
+59            <!--
+60                 Specifies an Android theme to apply to this Activity as soon as
+61                 the Android process has started. This theme is visible to the user
+62                 while the Flutter UI initializes. After that, this theme continues
+63                 to determine the Window background behind the Flutter UI.
+64            -->
+65            <meta-data
+66                android:name="io.flutter.embedding.android.NormalTheme"
+67                android:resource="@style/NormalTheme" />
+68
+69            <intent-filter>
+70                <action android:name="android.intent.action.MAIN" />
+71
+72                <category android:name="android.intent.category.LAUNCHER" />
+73            </intent-filter>
+74        </activity>
+75        <!--
+76             Don't delete the meta-data below.
+77             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+78        -->
+79        <meta-data
+80            android:name="flutterEmbedding"
+81            android:value="2" />
+82
+83        <service
+83-->[:firebase_auth] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-14:19
+84            android:name="com.google.firebase.components.ComponentDiscoveryService"
+84-->[:firebase_auth] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:10:18-89
+85            android:directBootAware="true"
+85-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:32:13-43
+86            android:exported="false" >
+86-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:68:13-37
+87            <meta-data
+87-->[:firebase_auth] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+88                android:name="com.google.firebase.components:io.flutter.plugins.firebase.auth.FlutterFirebaseAuthRegistrar"
+88-->[:firebase_auth] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
+89                android:value="com.google.firebase.components.ComponentRegistrar" />
+89-->[:firebase_auth] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+90            <meta-data
+90-->[:firebase_core] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+91                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
+91-->[:firebase_core] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
+92                android:value="com.google.firebase.components.ComponentRegistrar" />
+92-->[:firebase_core] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+93            <meta-data
+93-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:69:13-71:85
+94                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+94-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:70:17-109
+95                android:value="com.google.firebase.components.ComponentRegistrar" />
+95-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:71:17-82
+96            <meta-data
+96-->[com.google.firebase:firebase-common-ktx:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/05fe5df571fbb18646d63dce3641fe00/transformed/jetified-firebase-common-ktx-20.4.3/AndroidManifest.xml:12:13-14:85
+97                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
+97-->[com.google.firebase:firebase-common-ktx:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/05fe5df571fbb18646d63dce3641fe00/transformed/jetified-firebase-common-ktx-20.4.3/AndroidManifest.xml:13:17-116
+98                android:value="com.google.firebase.components.ComponentRegistrar" />
+98-->[com.google.firebase:firebase-common-ktx:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/05fe5df571fbb18646d63dce3641fe00/transformed/jetified-firebase-common-ktx-20.4.3/AndroidManifest.xml:14:17-82
+99            <meta-data
+99-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:35:13-37:85
+100                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
+100-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:36:17-109
+101                android:value="com.google.firebase.components.ComponentRegistrar" />
+101-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:37:17-82
+102        </service>
+103
+104        <activity
+104-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-20:47
+105            android:name="com.pichillilorenzo.flutter_inappwebview_android.in_app_browser.InAppBrowserActivity"
+105-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-112
+106            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+106-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-137
+107            android:exported="false"
+107-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-37
+108            android:theme="@style/AppTheme" />
+108-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-44
+109        <activity
+109-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:21:9-24:55
+110            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.ChromeCustomTabsActivity"
+110-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-120
+111            android:exported="false"
+111-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-37
+112            android:theme="@style/ThemeTransparent" />
+112-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:24:13-52
+113        <activity
+113-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:25:9-28:55
+114            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.TrustedWebActivity"
+114-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:26:13-114
+115            android:exported="false"
+115-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:27:13-37
+116            android:theme="@style/ThemeTransparent" />
+116-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:28:13-52
+117        <activity
+117-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:29:9-33:55
+118            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.ChromeCustomTabsActivitySingleInstance"
+118-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-134
+119            android:exported="false"
+119-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:31:13-37
+120            android:launchMode="singleInstance"
+120-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:32:13-48
+121            android:theme="@style/ThemeTransparent" />
+121-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:33:13-52
+122        <activity
+122-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:34:9-38:55
+123            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.TrustedWebActivitySingleInstance"
+123-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:35:13-128
+124            android:exported="false"
+124-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:36:13-37
+125            android:launchMode="singleInstance"
+125-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:37:13-48
+126            android:theme="@style/ThemeTransparent" />
+126-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:38:13-52
+127
+128        <receiver
+128-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:40:9-43:40
+129            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.ActionBroadcastReceiver"
+129-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:41:13-119
+130            android:enabled="true"
+130-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:42:13-35
+131            android:exported="false" />
+131-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:43:13-37
+132
+133        <meta-data
+133-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:45:9-47:36
+134            android:name="io.flutter.embedded_views_preview"
+134-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:46:13-61
+135            android:value="true" />
+135-->[:flutter_inappwebview_android] /Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/flutter_inappwebview_android/intermediates/merged_manifest/debug/AndroidManifest.xml:47:13-33
+136
+137        <activity
+137-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:29:9-46:20
+138            android:name="com.google.firebase.auth.internal.GenericIdpActivity"
+138-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:30:13-80
+139            android:excludeFromRecents="true"
+139-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:31:13-46
+140            android:exported="true"
+140-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:32:13-36
+141            android:launchMode="singleTask"
+141-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:33:13-44
+142            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+142-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:34:13-72
+143            <intent-filter>
+143-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:35:13-45:29
+144                <action android:name="android.intent.action.VIEW" />
+144-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:36:17-69
+144-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:36:25-66
+145
+146                <category android:name="android.intent.category.DEFAULT" />
+146-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:38:17-76
+146-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:38:27-73
+147                <category android:name="android.intent.category.BROWSABLE" />
+147-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:39:17-78
+147-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:39:27-75
+148
+149                <data
+149-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/main/AndroidManifest.xml:42:13-50
+150                    android:host="firebase.auth"
+151                    android:path="/"
+152                    android:scheme="genericidp" />
+153            </intent-filter>
+154        </activity>
+155        <activity
+155-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:47:9-64:20
+156            android:name="com.google.firebase.auth.internal.RecaptchaActivity"
+156-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:48:13-79
+157            android:excludeFromRecents="true"
+157-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:49:13-46
+158            android:exported="true"
+158-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:50:13-36
+159            android:launchMode="singleTask"
+159-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:51:13-44
+160            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+160-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:52:13-72
+161            <intent-filter>
+161-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:53:13-63:29
+162                <action android:name="android.intent.action.VIEW" />
+162-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:36:17-69
+162-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:36:25-66
+163
+164                <category android:name="android.intent.category.DEFAULT" />
+164-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:38:17-76
+164-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:38:27-73
+165                <category android:name="android.intent.category.BROWSABLE" />
+165-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:39:17-78
+165-->[com.google.firebase:firebase-auth:22.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/c5c14bfd6a74b13496660c2d7d0d58d1/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:39:27-75
+166
+167                <data
+167-->/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/android/app/src/main/AndroidManifest.xml:42:13-50
+168                    android:host="firebase.auth"
+169                    android:path="/"
+170                    android:scheme="recaptcha" />
+171            </intent-filter>
+172        </activity>
+173
+174        <provider
+174-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:23:9-28:39
+175            android:name="com.google.firebase.provider.FirebaseInitProvider"
+175-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:24:13-77
+176            android:authorities="com.example.musicapp.firebaseinitprovider"
+176-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:25:13-72
+177            android:directBootAware="true"
+177-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:26:13-43
+178            android:exported="false"
+178-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:27:13-37
+179            android:initOrder="100" />
+179-->[com.google.firebase:firebase-common:20.4.3] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/cb5b34bb06d51b0698d30d17cbd024f9/transformed/jetified-firebase-common-20.4.3/AndroidManifest.xml:28:13-36
+180
+181        <uses-library
+181-->[androidx.window:window:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/d47b1192960df52846144d82ac9e1d6f/transformed/jetified-window-1.2.0/AndroidManifest.xml:23:9-25:40
+182            android:name="androidx.window.extensions"
+182-->[androidx.window:window:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/d47b1192960df52846144d82ac9e1d6f/transformed/jetified-window-1.2.0/AndroidManifest.xml:24:13-54
+183            android:required="false" />
+183-->[androidx.window:window:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/d47b1192960df52846144d82ac9e1d6f/transformed/jetified-window-1.2.0/AndroidManifest.xml:25:13-37
+184        <uses-library
+184-->[androidx.window:window:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/d47b1192960df52846144d82ac9e1d6f/transformed/jetified-window-1.2.0/AndroidManifest.xml:26:9-28:40
+185            android:name="androidx.window.sidecar"
+185-->[androidx.window:window:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/d47b1192960df52846144d82ac9e1d6f/transformed/jetified-window-1.2.0/AndroidManifest.xml:27:13-51
+186            android:required="false" />
+186-->[androidx.window:window:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/d47b1192960df52846144d82ac9e1d6f/transformed/jetified-window-1.2.0/AndroidManifest.xml:28:13-37
+187
+188        <activity
+188-->[com.google.android.gms:play-services-base:18.0.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/14b322704d4e2bf3df95bc180f2fad1b/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:20:9-22:45
+189            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+189-->[com.google.android.gms:play-services-base:18.0.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/14b322704d4e2bf3df95bc180f2fad1b/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:20:19-85
+190            android:exported="false"
+190-->[com.google.android.gms:play-services-base:18.0.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/14b322704d4e2bf3df95bc180f2fad1b/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:22:19-43
+191            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+191-->[com.google.android.gms:play-services-base:18.0.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/14b322704d4e2bf3df95bc180f2fad1b/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:21:19-78
+192
+193        <meta-data
+193-->[com.google.android.gms:play-services-basement:18.3.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/7b4881d0d08dada2f4df61a6dcb57279/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:21:9-23:69
+194            android:name="com.google.android.gms.version"
+194-->[com.google.android.gms:play-services-basement:18.3.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/7b4881d0d08dada2f4df61a6dcb57279/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:22:13-58
+195            android:value="@integer/google_play_services_version" />
+195-->[com.google.android.gms:play-services-basement:18.3.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/7b4881d0d08dada2f4df61a6dcb57279/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:23:13-66
+196
+197        <provider
+197-->[androidx.emoji2:emoji2:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/416b72c60f2871d1386ba3a79cb8bd10/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+198            android:name="androidx.startup.InitializationProvider"
+198-->[androidx.emoji2:emoji2:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/416b72c60f2871d1386ba3a79cb8bd10/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:25:13-67
+199            android:authorities="com.example.musicapp.androidx-startup"
+199-->[androidx.emoji2:emoji2:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/416b72c60f2871d1386ba3a79cb8bd10/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:26:13-68
+200            android:exported="false" >
+200-->[androidx.emoji2:emoji2:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/416b72c60f2871d1386ba3a79cb8bd10/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:27:13-37
+201            <meta-data
+201-->[androidx.emoji2:emoji2:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/416b72c60f2871d1386ba3a79cb8bd10/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+202                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+202-->[androidx.emoji2:emoji2:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/416b72c60f2871d1386ba3a79cb8bd10/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
+203                android:value="androidx.startup" />
+203-->[androidx.emoji2:emoji2:1.2.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/416b72c60f2871d1386ba3a79cb8bd10/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
+204            <meta-data
+204-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/d674cd90e13def17f77b3f8010d35e09/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+205                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+205-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/d674cd90e13def17f77b3f8010d35e09/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+206                android:value="androidx.startup" />
+206-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/d674cd90e13def17f77b3f8010d35e09/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+207            <meta-data
+207-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+208                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+208-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+209                android:value="androidx.startup" />
+209-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+210        </provider>
+211
+212        <receiver
+212-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+213            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+213-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+214            android:directBootAware="false"
+214-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+215            android:enabled="true"
+215-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+216            android:exported="true"
+216-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+217            android:permission="android.permission.DUMP" >
+217-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+218            <intent-filter>
+218-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+219                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+219-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+219-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+220            </intent-filter>
+221            <intent-filter>
+221-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+222                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+222-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+222-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+223            </intent-filter>
+224            <intent-filter>
+224-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+225                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+225-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+225-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+226            </intent-filter>
+227            <intent-filter>
+227-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+228                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+228-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+228-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/nguyenvantuankiet/.gradle/caches/transforms-3/166e5df34c1c015ef6ddeae137513a3f/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+229            </intent-filter>
+230        </receiver>
+231    </application>
+232
+233</manifest>

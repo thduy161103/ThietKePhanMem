@@ -1,139 +1,208 @@
-// import 'package:flutter/material.dart';
-// import 'package:musicapp/home.dart';
-//
-// void main() => runApp(MusicHome());
-
-
 import 'package:flutter/material.dart';
-import 'phoneauth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:phone_email_auth/phone_email_auth.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase
-      .initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  //.then((FirebaseApp value) => print('Firebase App is initialized'), Get.put(AuthenticationRepository())  );
+
+  /// Initialize phone email function with
+  /// Client Id
+  PhoneEmail.initializeApp(clientId: '18867652854888250695');
+
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+      title: 'Phone Email',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 4, 201, 135),
+        ),
         useMaterial3: true,
       ),
-      home: PhoneAuth(),
+      home: const PhoneEmailAuthWidget(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class PhoneEmailAuthWidget extends StatefulWidget {
+  const PhoneEmailAuthWidget({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<PhoneEmailAuthWidget> createState() => _PhoneEmailAuthWidgetState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _PhoneEmailAuthWidgetState extends State<PhoneEmailAuthWidget> {
+  String userAccessToken = "";
+  String jwtUserToken = "";
+  bool hasUserLogin = false;
+  PhoneEmailUserModel? phoneEmailUserModel;
+  final phoneEmail = PhoneEmail();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  String emailCount = '';
+
+  /// Get email count after getting jwt token
+  void getTotalEmailCount() async {
+    await PhoneEmail.getEmailCount(
+      jwtUserToken,
+      onEmailCount: (count) {
+        setState(() {
+          emailCount = count;
+        });
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text('Phone Email'),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (hasUserLogin) ...[
+              if (phoneEmailUserModel != null) ...[
+                Divider(
+                  thickness: 0.5,
+                  color: Colors.grey.shade400,
+                ),
+                const SizedBox(height: 16.0),
+                const Text(
+                  "User Data",
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  "User name : ${phoneEmailUserModel?.firstName} ${phoneEmailUserModel?.lastName}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  "Phone Number : ${phoneEmailUserModel?.countryCode} ${phoneEmailUserModel?.phoneNumber}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+              ],
+              if (emailCount.isNotEmpty) ...[
+                Divider(
+                  thickness: 0.5,
+                  color: Colors.grey.shade400,
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  "Email Count : $emailCount",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+              ],
+            ],
+
+            /// Default button
+            if (!hasUserLogin) ...[
+              /// Button With extra rounded corner
+              /// and background color
+              /// and different text
+              Align(
+                alignment: Alignment.center,
+                child: PhoneLoginButton(
+                  borderRadius: 15,
+                  buttonColor: Colors.green,
+                  label: 'Sign in with Number',
+                  onSuccess: (String accessToken, String jwtToken) {
+                    // debugPrint("Access Token :: $accessToken");
+                    // debugPrint("Client ID :: $jwtToken");
+                    if (accessToken.isNotEmpty) {
+                      setState(() {
+                        userAccessToken = accessToken;
+                        jwtUserToken = jwtToken;
+                        hasUserLogin = true;
+                      });
+
+                      PhoneEmail.getUserInfo(
+                        accessToken: userAccessToken,
+                        clientId: phoneEmail.clientId,
+                        onSuccess: (userData) {
+                          setState(() {
+                            phoneEmailUserModel = userData;
+                            var countryCode = phoneEmailUserModel?.countryCode;
+                            var phoneNumber = phoneEmailUserModel?.phoneNumber;
+                            var firstName = phoneEmailUserModel?.firstName;
+                            var lastName = phoneEmailUserModel?.lastName;
+                            debugPrint("countryCode :: $countryCode");
+                            debugPrint("phoneNumber :: $phoneNumber");
+                            debugPrint("firstName :: $firstName");
+                            debugPrint("lastName :: $lastName");
+                            getTotalEmailCount();
+
+                          });
+                        },
+                      );
+
+                    }
+                  },
+                ),
+              ),
+            ],
+            const SizedBox(height: 16.0),
+              /// Logout
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: () {
+                    hasUserLogin = false;
+                    userAccessToken = "";
+                    jwtUserToken = "";
+                    phoneEmailUserModel = null;
+                    emailCount = '0';
+                    setState(() {});
+                  },
+                  child: const Text("Logout"),
+                ),
+              ),
+            ],
+          // ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+
+      /// Email button
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButton: hasUserLogin
+          ? EmailAlertButton(
+              jwtToken: jwtUserToken,
+            )
+          : const Offstage(),
     );
   }
 }
