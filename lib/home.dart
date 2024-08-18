@@ -1,68 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:musicapp/songlist.dart';
-import 'package:coupon_uikit/coupon_uikit.dart';
-class MusicHome extends StatelessWidget {
-  const MusicHome({super.key});
+
+class HomePage extends StatefulWidget {
+  final Function(bool, String, String) onLoginStateChanged;
+
+  const HomePage({required this.onLoginStateChanged, Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return  MaterialApp(
-      title: 'Music Player',
-      home: musicHomePage(),
-    );
-  }
+  _HomePageState createState() => _HomePageState();
 }
 
-class musicHomePage extends StatefulWidget {
-  const musicHomePage({Key? key}) : super(key: key);
-
-  @override
-  State<musicHomePage> createState() => _musicHomePageState();
-}
-class _musicHomePageState extends State<musicHomePage> {
-  int _currentIndex = 0;
-
-  final List<Widget> _pages = [
-    homePage(),
-    Center(child: Text('Events')), // Modified tab page for Events
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event), // Modified icon for Events
-            label: 'Events', // Modified label for Events
-          ),
-        ],
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
-      tabBuilder: (BuildContext context, int index) {
-        return CupertinoTabView(
-          builder: (BuildContext context) {
-            return _pages[index];
-          },
-        );
-      },
-    );
-  }
-}
-
-class homePage extends StatelessWidget {
-   homePage({Key? key});
-
+class _HomePageState extends State<HomePage> {
   final List<Map<String, dynamic>> dummyData = [
     {
       'songName': 'Song 1',
@@ -81,58 +28,67 @@ class homePage extends StatelessWidget {
     },
   ];
 
-
-  
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Song List'),
+        title: const Text('Song List'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Drawer Header',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text('Item 1'),
+              onTap: () {
+                // Handle drawer item 1 tap
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+            ListTile(
+              title: const Text('Item 2'),
+              onTap: () {
+                // Handle drawer item 2 tap
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Call the updateUserLoginState function to log out
+                  widget.onLoginStateChanged(false, '', '');
+
+                  // Navigate back to the login screen or home screen
+                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                },
+                child: const Text("Logout"),
+              ),
+            ),
+          ],
+        ),
       ),
       body: ListView.builder(
         itemCount: dummyData.length,
-        itemBuilder: (BuildContext context, int index) {
-            final song = dummyData[index];
-            return Padding(
-            padding: EdgeInsets.all(8.0), // Add padding
-            child: CouponCard(
-              firstChild: Row( // Change to Row
-              children: [
-                Expanded(
-                child: ListTile(
-                  title: Text(
-                  song['songName'], // Remove unnecessary textDirection
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  ),
-                  subtitle: Text(
-                  song['author'],
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                  ),
-                  trailing: Text(
-                  '${song['likes']} likes',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  ),
-                ),
-                ),
-                // Keep the secondChild as an empty container
-              ],
-              ),
-               secondChild:Container(),
-              border: BorderSide.none, // Remove border color
-              curveAxis: Axis.horizontal,
-               // Change child widget axis to horizontal
-            ),
-            );
+        itemBuilder: (context, index) {
+          final song = dummyData[index];
+          return ListTile(
+            title: Text(song['songName']),
+            subtitle: Text('Author: ${song['author']}'),
+            trailing: Text('Likes: ${song['likes']}'),
+          );
         },
       ),
     );
