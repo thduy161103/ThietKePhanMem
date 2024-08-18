@@ -91,56 +91,6 @@ class _PhoneEmailAuthWidgetState extends State<PhoneEmailAuthWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (hasUserLogin) ...[
-                if (phoneEmailUserModel != null) ...[
-                  Divider(
-                    thickness: 0.5,
-                    color: Colors.grey.shade400,
-                  ),
-                  const SizedBox(height: 16.0),
-                  const Text(
-                    "User Data",
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    "User name : ${phoneEmailUserModel?.firstName} ${phoneEmailUserModel?.lastName}",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    "Phone Number : ${phoneEmailUserModel?.countryCode} ${phoneEmailUserModel?.phoneNumber}",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                ],
-                if (emailCount.isNotEmpty) ...[
-                  Divider(
-                    thickness: 0.5,
-                    color: Colors.grey.shade400,
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    "Email Count : $emailCount",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                ],
-              ],
-  
-              /// Default button
               if (!hasUserLogin) ...[
                 /// Button With extra rounded corner
                 /// and background color
@@ -186,34 +136,11 @@ class _PhoneEmailAuthWidgetState extends State<PhoneEmailAuthWidget> {
                   ),
                 ),
               ],
-              const SizedBox(height: 16.0),
-                /// Logout
-                Align(
-                  alignment: Alignment.center,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      hasUserLogin = false;
-                      userAccessToken = "";
-                      jwtUserToken = "";
-                      phoneEmailUserModel = null;
-                      emailCount = '0';
-                      setState(() {});
-                    },
-                    child: const Text("Logout"),
-                  ),
-                ),
+            
               ],
             // ],
           ),
         ),
-  
-        /// Email button
-        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-        floatingActionButton: hasUserLogin
-            ? EmailAlertButton(
-                jwtToken: jwtUserToken,
-              )
-            : const Offstage(),
       );
       
       // Add a default return statement
