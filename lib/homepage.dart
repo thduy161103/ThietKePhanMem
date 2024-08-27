@@ -2,9 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musicapp/songlist.dart';
 import 'package:coupon_uikit/coupon_uikit.dart';
+
+import 'models/event.dart';
+
+
 class HomePage extends StatelessWidget {
-  final Function(bool, String, String) onLoginStateChanged;
-  const HomePage({required this.onLoginStateChanged, super.key});
+  //final Function(bool, String, String) onLoginStateChanged;
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -190,16 +194,16 @@ class EventList extends StatelessWidget {
   }
 }
 
-class Event {
-  final String imageUrl;
-  final String companyName;
-  final String eventName;
-  final String endTime;
-
-  Event({
-    required this.imageUrl,
-    required this.companyName,
-    required this.eventName,
-    required this.endTime,
-  });
-}
+// class Event {
+//   final String imageUrl;
+//   final String companyName;
+//   final String eventName;
+//   final String endTime;
+//
+//   Event({
+//     required this.imageUrl,
+//     required this.companyName,
+//     required this.eventName,
+//     required this.endTime,
+//   });
+// }
