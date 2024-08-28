@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../screens/homepage.dart';
 
 class OtpRequest {
   static const String url = 'https://yourapi.com/verify-otp';
@@ -18,11 +19,17 @@ class OtpRequest {
     );
 
     if (response.statusCode == 200) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
       );
     } else {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', false);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to verify OTP: ${response.body}')),
       );

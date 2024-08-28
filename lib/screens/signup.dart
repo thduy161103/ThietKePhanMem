@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../network/signup.dart';
+import 'signin.dart';
 
 class signUpPage extends StatefulWidget {
   const signUpPage({super.key});
@@ -92,6 +93,15 @@ class _signUpPageState extends State<signUpPage> {
                   }
                 },
                 child: Text('Sign Up'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => signInPage()),
+                  );
+                },
+                child: Text('Nếu bạn đã có tài khoản hãy đăng nhập'),
               ),
             ],
           ),

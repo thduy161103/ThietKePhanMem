@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage1 extends StatefulWidget {
   final Function(bool, String, String) onLoginStateChanged;
 
-  const HomePage({required this.onLoginStateChanged, Key? key}) : super(key: key);
+  const HomePage1({required this.onLoginStateChanged, Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage1> {
   final List<Map<String, dynamic>> dummyData = [
     {
       'songName': 'Song 1',

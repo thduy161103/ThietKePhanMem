@@ -10,4 +10,13 @@ class Event {
     required this.eventName,
     required this.endTime,
   });
+
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      imageUrl: json['imageUrl'],
+      companyName: json['companyName'],
+      eventName: json['eventName'],
+      endTime: json['endTime'],
+    );
+  }
 }

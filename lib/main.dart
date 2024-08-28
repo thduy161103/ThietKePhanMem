@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:musicapp/drawer.dart';
+import 'package:musicapp/screens/drawer.dart';
 import 'package:musicapp/home.dart';
 import 'package:phone_email_auth/phone_email_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'screens/homepage.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
   /// Initialize phone email function with
   /// Client Id
   PhoneEmail.initializeApp(clientId: '18867652854888250695');
 
-  runApp(const MyApp());
+  runApp( MyApp(isLoggin: isLoggedIn));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
+   MyApp({super.key, required this.isLoggin});
+  bool isLoggin;
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -37,7 +41,8 @@ class _MyAppState extends State<MyApp> {
         ),
         useMaterial3: true,
       ),
-      home: const PhoneEmailAuthWidget(),
+      //home: PhoneEmailAuthWidget(),
+      home: widget.isLoggin ? HomePage() : PhoneEmailAuthWidget(),
     );
   }
 }
@@ -110,7 +115,7 @@ class _PhoneEmailAuthWidgetState extends State<PhoneEmailAuthWidget> {
                           jwtUserToken = jwtToken;
                           hasUserLogin = true;
                         });
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(  onLoginStateChanged: updateUserLoginState,)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
                         PhoneEmail.getUserInfo(
                           accessToken: userAccessToken,
                           clientId: phoneEmail.clientId,

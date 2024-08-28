@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../models/user.dart';
 import '../screens/otppage.dart';
 
 class SignInRequest {
   static const String url = 'https://yourapi.com/signin';
 
-  static Future<void> signIn(BuildContext context, String username, String password) async {
+  static Future<User?> signIn(BuildContext context, String username, String password) async {
     final response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
