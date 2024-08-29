@@ -12,10 +12,11 @@ class ShakeApp extends StatefulWidget {
 
 class _ShakeAppState extends State<ShakeApp> {
   int shakeCount = 0;
-  int remainingTime = 60;
+  bool _gameStarted = false;
+  int _countdown = 10;
   List<Reward> rewards = [];
   List<Item> inventory = [];
-  late Timer _timer;
+  Timer? _timer;
   double _lastX = 0, _lastY = 0, _lastZ = 0;
   final double shakeThreshold = 2.7;
 
@@ -26,7 +27,27 @@ class _ShakeAppState extends State<ShakeApp> {
     rewards.add(Reward("Tai nghe Bluetooth", "Tai nghe Bluetooth chất lượng cao", 100));
     inventory.add(Item("Tai nghe", "Tai nghe thông thường", 10));
     // ... thêm các vật phẩm khác
-    startTimer();
+  }
+
+  void _startGame() {
+    setState(() {
+      _gameStarted = true;
+      shakeCount = 0;
+      _countdown = 60;
+    });
+
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_countdown > 0) {
+          _countdown--;
+        } else {
+          _timer?.cancel();
+          _gameStarted = false;
+          showExchangeDialog();
+        }
+      });
+    });
+
     accelerometerEvents.listen((AccelerometerEvent event) {
       double deltaX = (event.x - _lastX).abs();
       double deltaY = (event.y - _lastY).abs();
@@ -42,21 +63,9 @@ class _ShakeAppState extends State<ShakeApp> {
     });
   }
 
-  void startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (remainingTime > 0) {
-        setState(() {
-          remainingTime--;
-        });
-      } else {
-        timer.cancel();
-      }
-    });
-  }
-
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -94,44 +103,43 @@ class _ShakeAppState extends State<ShakeApp> {
         title: Text('Lắc để đổi thưởng'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Số lần lắc: $shakeCount'),
-            Text('Thời gian còn lại: $remainingTime giây'),
-            // Hiển thị danh sách phần thưởng và vật phẩm
-            Expanded(
-              child: ListView.builder(
-                itemCount: rewards.length + inventory.length,
-                itemBuilder: (context, index) {
-                  if (index < rewards.length) {
-                    return ListTile(
-                      title: Text(rewards[index].name),
-                      subtitle: Text(rewards[index].description),
-                    );
-                  } else {
-                    return ListTile(
-                      title: Text(inventory[index - rewards.length].name),
-                      subtitle: Text(inventory[index - rewards.length].description),
-                    );
-                  }
-                },
-              ),
+        child: _gameStarted
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                    Text('Thời gian còn lại: $_countdown giây'),
+                    Text('Số lần lắc: $shakeCount'),
+                    Expanded(
+                        child: ListView.builder(
+                            itemCount: rewards.length + inventory.length,
+                            itemBuilder: (context, index) {
+                              if (index < rewards.length) {
+                                return ListTile(
+                                  title: Text(rewards[index].name),
+                                  subtitle: Text(rewards[index].description),
+                              );
+                              } else {
+                                return ListTile(
+                                  title: Text(inventory[index - rewards.length].name),
+                                  subtitle: Text(inventory[index - rewards.length].description),
+                                );
+                              }
+                            },
+                        ),
+                    ),
+                    // ElevatedButton(
+                    //     onPressed: showExchangeDialog,
+                    //     child: Text('Đổi vật phẩm'),
+                    // ),
+              ],
+            )
+            : ElevatedButton(
+                onPressed: _startGame,
+                child: Text('Bắt đầu'),
             ),
-            // Nút đổi vật phẩm
-            ElevatedButton(
-              onPressed: () {
-                // Hiển thị dialog để đổi vật phẩm
-              },
-              child: Text('Đổi vật phẩm'),
-            ),
-          ],
-        ),
       ),
     );
   }
-
-// ... các hàm khác tương tự như trong code Kotlin
 }
 
 class Reward {

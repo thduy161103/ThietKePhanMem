@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musicapp/songlist.dart';
 import 'package:coupon_uikit/coupon_uikit.dart';
+import 'clickapp.dart';
 import 'drawer.dart';
 
 import '../models/event.dart';
 import '../network/events.dart';
+import 'shakeapp.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -21,7 +23,13 @@ class _HomePageState extends State<HomePage> {
     Event(
       imageUrl: 'assets/images/company1.png',
       companyName: 'Công ty A',
-      eventName: 'Trò chơi may mắn',
+      eventName: 'Shake App Challenge',
+      endTime: '31/12/2023',
+    ),
+    Event(
+      imageUrl: 'assets/images/company2.png',
+      companyName: 'Công ty B',
+      eventName: 'Click App Challenge',
       endTime: '31/12/2023',
     ),
     // Thêm các sự kiện khác vào đây
@@ -33,6 +41,20 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     futureEvents = EventRequest.fetchEvents();
+  }
+
+  void _onEventTap(Event event) {
+    if (event.eventName == 'Shake App Challenge') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ShakeApp()),
+      );
+    } else if (event.eventName == 'Click App Challenge') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ClickApp()),
+      );
+    }
   }
 
   @override
@@ -77,6 +99,7 @@ class _HomePageState extends State<HomePage> {
                     trailing: CircularProgressIndicator(
                       value: 0.5, // Thay đổi giá trị để hiển thị tiến độ
                     ),
+                    onTap: () => _onEventTap(event),
                   ),
                 );
               },
