@@ -1,28 +1,55 @@
 class User {
-  final String username;
-  final String password;
+  final String fullName;
   final String email;
   final String phone;
+  final String username;
+  final String password;
+  final String avatar;
+  final String dateOfBirth;
+  final String sex;
+  final String facebook;
+  final String role;
 
   User({
-    required this.username,
-    required this.password,
+    required this.fullName,
     required this.email,
     required this.phone,
+    required this.username,
+    required this.password,
+    required this.avatar,
+    required this.dateOfBirth,
+    required this.sex,
+    required this.facebook,
+    required this.role,
   });
 
-  User.fromJson(Map<String, dynamic> json):
-        username = json['username'],
-        password = json['password'],
-        email = json['email'],
-        phone = json['phone'];
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      fullName: json['fullName'],
+      email: json['email'],
+      phone: json['phone'],
+      username: json['username'],
+      password: json['password'],
+      avatar: json['avatar'],
+      dateOfBirth: json['dateOfBirth'],
+      sex: json['sex'],
+      facebook: json['facebook'],
+      role: json['role'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> data = new Map<String, dynamic>();
-    data['username'] = this.username;
-    data['password'] = this.password;
-    data['email'] = this.email;
-    data['phone'] = this.phone;
-    return data;
+    return {
+      'fullName': fullName,
+      'email': email,
+      'phone': phone,
+      'username': username,
+      'password': password,
+      'avatar': avatar,
+      'dateOfBirth': dateOfBirth,
+      'sex': sex,
+      'facebook': facebook,
+      'role': role,
+    };
   }
 }

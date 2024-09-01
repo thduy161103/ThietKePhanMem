@@ -1,10 +1,10 @@
-#Sun Aug 18 10:33:19 ICT 2024
-base.0=/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/app/intermediates/dex/debug/mergeExtDexDebug/classes.dex
-base.1=/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/app/intermediates/dex/debug/mergeLibDexDebug/0/classes.dex
-base.2=/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/app/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
-base.3=/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/app/intermediates/dex/debug/mergeProjectDexDebug/1/classes.dex
-base.4=/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/app/intermediates/dex/debug/mergeProjectDexDebug/2/classes.dex
-base.5=/Users/nguyenvantuankiet/Downloads/TKPM/ThietKePhanMem/build/app/intermediates/dex/debug/mergeExtDexDebug/classes2.dex
+#Sat Aug 31 22:29:07 ICT 2024
+base.0=D\:\\DH\\Mobile\\thiet_ke_pm\\ThietKePhanMem\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=D\:\\DH\\Mobile\\thiet_ke_pm\\ThietKePhanMem\\build\\app\\intermediates\\dex\\debug\\mergeLibDexDebug\\0\\classes.dex
+base.2=D\:\\DH\\Mobile\\thiet_ke_pm\\ThietKePhanMem\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.3=D\:\\DH\\Mobile\\thiet_ke_pm\\ThietKePhanMem\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\1\\classes.dex
+base.4=D\:\\DH\\Mobile\\thiet_ke_pm\\ThietKePhanMem\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\2\\classes.dex
+base.5=D\:\\DH\\Mobile\\thiet_ke_pm\\ThietKePhanMem\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
 path.0=classes.dex
 path.1=0/classes.dex
 path.2=0/classes.dex

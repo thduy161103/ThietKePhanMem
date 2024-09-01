@@ -41,6 +41,7 @@ dependencies:
   sensors_plus: ^6.0.1
   http: any
   shared_preferences: any
+  dio: any
 
 dev_dependencies:
   flutter_test:
