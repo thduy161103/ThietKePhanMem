@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "930454745325",
+    "project_id": "tkpm-a3f13",
+    "storage_bucket": "tkpm-a3f13.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930454745325:android:fffd714558bbef15b09ce4",
+        "android_client_info": {
+          "package_name": "com.example.musicapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDYy_g7g2xtNftUP-ZCdUa694qwEK3Jfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

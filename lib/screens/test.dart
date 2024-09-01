@@ -76,7 +76,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
       // Upload to Firebase Storage
       try {
-        final ref = FirebaseStorage.instance.ref().child('avatars/${DateTime.now().toIso8601String()}');
+        final ref = FirebaseStorage.instance.ref().child('avatars').child('image.png');
+        
         final uploadTask = ref.putFile(_avatarFile!);
         final snapshot = await uploadTask.whenComplete(() {});
         final downloadUrl = await snapshot.ref.getDownloadURL();
