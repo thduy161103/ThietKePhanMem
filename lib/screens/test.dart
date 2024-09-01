@@ -1,7 +1,8 @@
-import 'dart:math';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 import '../models/user.dart';
 import '../network/api_service.dart';
 
@@ -13,7 +14,6 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final ApiService _apiService = ApiService();
-  final Dio _dio = Dio();
 
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -25,6 +25,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _sexController = TextEditingController();
   final TextEditingController _facebookController = TextEditingController();
   final TextEditingController _roleController = TextEditingController();
+
+  File? _avatarFile;
+  final ImagePicker _picker = ImagePicker();
 
   void _signUp() async {
     if (_formKey.currentState!.validate()) {
@@ -61,6 +64,42 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       }
     }
+  }
+
+  Future<void> _pickAndUploadAvatar() async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _avatarFile = File(pickedFile.path);
+      });
+
+      // Upload to Firebase Storage
+      try {
+        final ref = FirebaseStorage.instance.ref().child('avatars/${DateTime.now().toIso8601String()}');
+        final uploadTask = ref.putFile(_avatarFile!);
+        final snapshot = await uploadTask.whenComplete(() {});
+        final downloadUrl = await snapshot.ref.getDownloadURL();
+
+        setState(() {
+          _avatarController.text = downloadUrl;
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to upload avatar: $e')),
+        );
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
+  Future<void> _initializeFirebase() async {
+    await Firebase.initializeApp();
   }
 
   @override
@@ -126,9 +165,27 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
               ),
+              GestureDetector(
+                onTap: _pickAndUploadAvatar,
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: _avatarFile != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.file(_avatarFile!, fit: BoxFit.cover),
+                        )
+                      : Icon(Icons.add_a_photo, size: 40),
+                ),
+              ),
               TextFormField(
                 controller: _avatarController,
-                decoration: InputDecoration(labelText: 'Avatar'),
+                decoration: InputDecoration(labelText: 'Avatar URL'),
+                readOnly: true,
               ),
               TextFormField(
                 controller: _dateOfBirthController,
