@@ -17,6 +17,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  app_widget:
+    dependency: "direct main"
+    description:
+      name: app_widget
+      sha256: bde740d2f3ca0ae2f5669a80b9fcf8e543632c00f923620966a82a54e28e02e9
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
+  app_widget_android:
+    dependency: transitive
+    description:
+      name: app_widget_android
+      sha256: "9a0aa193b373bf2e548d5af721e021b166f607ad932fc144334ce55b4ff40320"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
+  app_widget_platform_interface:
+    dependency: transitive
+    description:
+      name: app_widget_platform_interface
+      sha256: a288112ec826c25e7638ddc30c33a5e7279cfc2eadba89ccb33bc8d3ddbb589c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   async:
     dependency: transitive
     description:

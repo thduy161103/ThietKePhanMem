@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:musicapp/screens/drawer.dart';
 import 'package:musicapp/home.dart';
-import 'package:musicapp/screens/test.dart';
+
 import 'package:phone_email_auth/phone_email_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/homepage.dart';
@@ -9,20 +9,14 @@ import 'screens/signin.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'screens/signup.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-);
-  final prefs = await SharedPreferences.getInstance();
-  final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
-  /// Initialize phone email function with
-  /// Client Id
-  PhoneEmail.initializeApp(clientId: '18867652854888250695');
-
-  runApp( MyApp(isLoggin: isLoggedIn));
+  );
+  runApp(MyApp(isLoggin: true,));
 }
 
 class MyApp extends StatefulWidget {

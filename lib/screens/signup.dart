@@ -1,232 +1,267 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import '../network/signup.dart';
-import 'signin.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:musicapp/screens/signin.dart';
+import '../models/user.dart';
+import '../network/api_service.dart';
+import 'widgets/input_field.dart';
+import '../utils/app_styles.dart';
 
-class signUpPage extends StatefulWidget {
-  const signUpPage({super.key});
-
+class SignUpPage extends StatefulWidget {
   @override
-  State<signUpPage> createState() => _signUpPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _signUpPageState extends State<signUpPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final ApiService _apiService = ApiService();
+
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _avatarController = TextEditingController();
+  final TextEditingController _dateOfBirthController = TextEditingController();
+  final TextEditingController _sexController = TextEditingController();
+  final TextEditingController _facebookController = TextEditingController();
+  final TextEditingController _roleController = TextEditingController();
 
-  TextStyle _getTextFieldStyle() {
-    return TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-      color: Colors.grey[600],
-    );
+  File? _avatarFile;
+  final ImagePicker _picker = ImagePicker();
+
+  void _signUp() async {
+    if (_formKey.currentState!.validate()) {
+      User newUser = User(
+        fullName: _fullNameController.text,
+        email: _emailController.text,
+        phone: _phoneController.text,
+        username: _usernameController.text,
+        password: _passwordController.text,
+        avatar: _avatarController.text,
+        dateOfBirth: _dateOfBirthController.text,
+        sex: _sexController.text,
+        facebook: _facebookController.text,
+        role: _roleController.text,
+      );
+
+      try {
+        //final response = await _dio.post('http://desktop-a2g83h7:8080/auth/register', data: newUser.toJson());
+         final response = await _apiService.post('auth/register', newUser.toJson());
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Sign up successful')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+
+            SnackBar(content: Text('Failed to sign up: ${response.data}')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+
+          SnackBar(content: Text('Failed to sign up: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _pickAndUploadAvatar() async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _avatarFile = File(pickedFile.path);
+      });
+
+      // Upload to Firebase Storage
+      try {
+        final ref = FirebaseStorage.instance.ref().child('avatars').child('image.png');
+        
+        final uploadTask = ref.putFile(_avatarFile!);
+        final snapshot = await uploadTask.whenComplete(() {});
+        final downloadUrl = await snapshot.ref.getDownloadURL();
+
+        _avatarController.text = downloadUrl;
+        
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to upload avatar: $e')),
+        );
+      }
+    }
   }
 
   @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+
+  }
+
+  Future<void> _initializeFirebase() async {
+    await Firebase.initializeApp();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: Stack(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 2.5,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFFff5c30),
-                        Color(0xFFe74b1a),
-                      ],
-                    ),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 2.5,
+                decoration: AppStyles.getGradientDecoration(),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+                height: MediaQuery.of(context).size.height * 2 / 3,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
-                  height: MediaQuery.of(context).size.height / 2,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 60.0, left: 20.0, right: 20.0),
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          width: MediaQuery.of(context).size.width / 2.5, // Changed from 1.5 to 2.5
-                          fit: BoxFit.contain, // Changed from cover to contain
-                        ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 60.0, left: 20.0, right: 20.0),
+                child: Column(
+                  children: [
+                    Center(
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        fit: BoxFit.contain,
                       ),
-                      SizedBox(height: 20.0), // Reduced the height from 30.0 to 20.0
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Material(
-                            elevation: 5.0,
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Form(
-                                key: _formKey,
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 30.0),
-                                    Text(
-                                      "Sign up",
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
+                    ),
+                    SizedBox(height: 20.0),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Material(
+                          elevation: 5.0,
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  Text("Sign up", style: AppStyles.getHeadlineStyle()),
+                                  SizedBox(height: 20.0),
+                                  CustomTextFormField(
+                                    icon: Icons.person_outlined,
+                                    hintText: 'Full Name',
+                                    controller: _fullNameController,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.email_outlined,
+                                    hintText: 'Email',
+                                    controller: _emailController,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.phone_outlined,
+                                    hintText: 'Phone',
+                                    controller: _phoneController,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.person_outlined,
+                                    hintText: 'Username',
+                                    controller: _usernameController,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.lock_outlined,
+                                    hintText: 'Password',
+                                    controller: _passwordController,
+                                    obscureText: true,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.calendar_today,
+                                    hintText: 'Date of Birth',
+                                    controller: _dateOfBirthController,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.person_outline,
+                                    hintText: 'Sex',
+                                    controller: _sexController,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.facebook,
+                                    hintText: 'Facebook',
+                                    controller: _facebookController,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.person,
+                                    hintText: 'Role',
+                                    controller: _roleController,
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  GestureDetector(
+                                    onTap: _pickAndUploadAvatar,
+                                    child: Container(
+                                      height: 60,
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(40),
+                                      ),
+                                      child: _avatarFile != null
+                                          ? ClipRRect(
+                                              borderRadius: BorderRadius.circular(40),
+                                              child: Image.file(_avatarFile!, fit: BoxFit.cover),
+                                            )
+                                          : Icon(Icons.add_a_photo, size: 30),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  GestureDetector(
+                                    onTap: _signUp,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                                      width: double.infinity,
+                                      decoration: AppStyles.getButtonDecoration(),
+                                      child: Center(
+                                        child: Text("SIGN UP", style: AppStyles.getButtonTextStyle()),
                                       ),
                                     ),
-                                    SizedBox(height: 30.0),
-                                    TextFormField(
-                                      controller: _usernameController,
-                                      decoration: InputDecoration(
-                                        hintText: 'Username',
-                                        hintStyle: _getTextFieldStyle(),
-                                        prefixIcon: Icon(Icons.person_outlined),
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your username';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    SizedBox(height: 30.0),
-                                    TextFormField(
-                                      controller: _emailController,
-                                      decoration: InputDecoration(
-                                        hintText: 'Email',
-                                        hintStyle: _getTextFieldStyle(),
-                                        prefixIcon: Icon(Icons.email_outlined),
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your email';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    SizedBox(height: 30.0),
-                                    TextFormField(
-                                      controller: _passwordController,
-                                      obscureText: true,
-                                      decoration: InputDecoration(
-                                        hintText: 'Password',
-                                        hintStyle: _getTextFieldStyle(),
-                                        prefixIcon: Icon(Icons.password_outlined),
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your password';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    SizedBox(height: 30.0),
-                                    TextFormField(
-                                      controller: _phoneController,
-                                      decoration: InputDecoration(
-                                        hintText: 'Phone',
-                                        hintStyle: _getTextFieldStyle(),
-                                        prefixIcon: Icon(Icons.phone_outlined),
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your phone number';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    SizedBox(height: 50.0),
-                                    GestureDetector(
-                                      onTap: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          signUpRequest.signUp(
-                                            context,
-                                            _usernameController.text,
-                                            _passwordController.text,
-                                            _emailController.text,
-                                            _phoneController.text,
-                                          );
-                                        }
-                                      },
-                                      child: Material(
-                                        elevation: 5.0,
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                                          width: 200,
-                                          decoration: BoxDecoration(
-                                            color: Color(0Xffff5722),
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              "SIGN UP",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18.0,
-                                                fontFamily: 'Poppins1',
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => signInPage()),
-                                        );
-                                      },
-                                      child: Text('Nếu bạn đã có tài khoản hãy đăng nhập'),
-                                    ),
-                                    SizedBox(height: 20.0),
-                                  ],
-                                ),
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => signInPage()));
+                                    },
+                                    child: Text('Already have an account? Sign in'),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
