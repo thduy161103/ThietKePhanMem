@@ -4,7 +4,7 @@ class ApiService {
   final Dio _dio = Dio();
 
   ApiService() {
-    _dio.options.baseUrl = 'http://desktop-a2g83h7:8080/';
+    _dio.options.baseUrl = 'http://macbookair:8080/';
     _dio.options.headers = {
       'Content-Type': 'application/json; charset=UTF-8',
     };

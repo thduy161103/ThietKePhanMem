@@ -9,7 +9,7 @@ class OtpRequest {
 
   static Future<http.Response> requestOtp(String phoneNumber) async { 
     final response = await http.post(
-      Uri.parse('http://macbookair:8080/auth/request-otp'),
+      Uri.parse('http://macbookair:8080/auth/validate-phone'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
