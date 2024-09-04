@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:musicapp/screens/homepage.dart';
+//import 'package:musicapp/screens/drawer.dart';
+//import 'package:musicapp/home.dart';
+//import 'package:musicapp/screens/otppage.dart';
+
+//import 'package:musicapp/screens/shakeapp.dart';
+ // Import the quiz screen
+
+//import 'package:phone_email_auth/phone_email_auth.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
+//import 'screens/homepage.dart';
+//import 'screens/quiz/quiz_screen.dart';
 import 'screens/signin.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -38,7 +48,7 @@ class _MyAppState extends State<MyApp> {
         ),
         useMaterial3: true,
       ),
-      home: HomePage(), // Set the home to QuizScreen for testing
+      home: signInPage(), // Set the home to QuizScreen for testing
       //home: widget.isLoggin ? HomePage() : signInPage(),
     );
   }
