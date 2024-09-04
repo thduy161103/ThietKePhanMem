@@ -1,30 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/app_styles.dart';
-import 'homepage.dart'; // Make sure to import the HomePage
+import '../models/user.dart'; // Import the user model
+import 'homepage.dart';
 
-class MyDrawer extends StatefulWidget {
-  @override
-  _MyDrawerState createState() => _MyDrawerState();
-}
+class MyDrawer extends StatelessWidget {
+  final User user;
 
-class _MyDrawerState extends State<MyDrawer> {
-  String username = '';
-  String email = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserInfo();
-  }
-
-  Future<void> _loadUserInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      username = prefs.getString('username') ?? 'Duong';
-      email = prefs.getString('email') ?? 'vanduong@test.com';
-    });
-  }
+  MyDrawer({required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -47,13 +30,13 @@ class _MyDrawerState extends State<MyDrawer> {
                       radius: 40,
                       backgroundColor: Colors.white,
                       child: Text(
-                        username.isNotEmpty ? username[0].toUpperCase() : '',
+                        user.username.isNotEmpty ? user.username[0].toUpperCase() : '',
                         style: TextStyle(fontSize: 40.0, color: Color(0xFFff5c30)),
                       ),
                     ),
                     SizedBox(height: 10),
                     Text(
-                      username,
+                      user.username,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -61,7 +44,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                     ),
                     Text(
-                      email,
+                      user.email,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,

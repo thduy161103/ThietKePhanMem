@@ -7,6 +7,31 @@ import '../screens/homepage.dart';
 class OtpRequest {
   static const String url = 'http://macbookair:8080/auth/validate-otp';
 
+  static Future<http.Response> requestOtp(String phoneNumber) async { 
+    final response = await http.post(
+      Uri.parse('http://macbookair:8080/auth/validate-phone'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'phoneNumber': phoneNumber,
+      }),
+    );
+    return response;
+  }
+  static Future<http.Response> verifyOtpInSignUp(String otp, String username) async {
+    final response = await http.post(
+      Uri.parse('http://macbookair:8080/auth/validate-otp'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'otp': otp,
+      }),
+    );
+    return response;
+  }
   static Future<void> verifyOtp(BuildContext context, String otp, String username) async {
     try {
       final response = await http.post(
@@ -48,7 +73,7 @@ class OtpRequest {
         await prefs.setBool('isLoggedIn', false);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to verify OTP. Status: ${response.statusCode}, Body: ${response.body}')),
+          const SnackBar(content: Text('Failed to verify OTP')),
         );
       }
     } catch (e) {

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:intl/intl.dart';
-import 'package:musicapp/screens/signin.dart';
 import '../models/user.dart';
 import '../network/api_service.dart';
+import '../network/otp.dart';
+//import '../network/signup.dart';
 import 'widgets/input_field.dart';
 import '../utils/app_styles.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'; // Add this import instead
+import 'signin.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -27,16 +27,59 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _avatarController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
+  final TextEditingController _sexController = TextEditingController();
   final TextEditingController _facebookController = TextEditingController();
+  final TextEditingController _roleController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
 
   File? _avatarFile;
   final ImagePicker _picker = ImagePicker();
 
-  String _selectedSex = 'Male'; // Default value
-  String _selectedDate = 'Select Date of Birth';
+  bool _isOtpVerified = false;
+
+  void _requestOTP() async {
+    try {
+      final response = await OtpRequest.requestOtp(_phoneController.text);
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('OTP sent successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to send OTP: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to send OTP: $e')),
+      );
+    }
+  }
+
+  // void _verifyOTP() async {
+  //   try {
+  //     final response = await OtpRequest.verifyOtpInSignUp(_usernameController.text.toString(), _otpController.text.toString());
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         _isOtpVerified = true;
+  //       });
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('OTP verified successfully')),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('OTP verification failed: ${response.body}')),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('OTP verification failed: $e')),
+  //     );
+  //   }
+  // }
 
   void _signUp() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && _isOtpVerified) {
       User newUser = User(
         fullName: _fullNameController.text,
         email: _emailController.text,
@@ -45,17 +88,21 @@ class _SignUpPageState extends State<SignUpPage> {
         password: _passwordController.text,
         avatar: _avatarController.text,
         dateOfBirth: _dateOfBirthController.text,
-        sex: _selectedSex, // Use _selectedSex here
+        sex: _sexController.text,
         facebook: _facebookController.text,
-        role: "ROLE_USER",
+        role: _roleController.text,
+        otp: _otpController.text,
       );
 
       try {
-        final response = await _apiService.post('auth/register', newUser.toJson());
+        //final response = await _dio.post('http://desktop-a2g83h7:8080/auth/register', data: newUser.toJson());
+         final response = await _apiService.post('auth/register', newUser.toJson());
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Sign up successful')),
           );
+        //Chuyển qua trang đăng nhập
+        Navigator.push(context, MaterialPageRoute(builder: (context) => signInPage()));
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to sign up: ${response.data}')),
@@ -98,7 +145,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
-
+    _roleController.text = "ROLE_CUSTOMER";
   }
 
   Future<void> _initializeFirebase() async {
@@ -159,45 +206,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               child: Column(
                                 children: [
                                   Text("Sign up", style: AppStyles.getHeadlineStyle()),
-                                  SizedBox(height: 30.0),
-                                  CustomTextFormField(
-                                    icon: Icons.person_outlined,
-                                    hintText: 'Full Name',
-                                    controller: _fullNameController,
-                                  ),
-                                  SizedBox(height: 15.0),
-                                  CustomTextFormField(
-                                    icon: Icons.email_outlined,
-                                    hintText: 'Email',
-                                    controller: _emailController,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter your email';
-                                      }
-                                      // Email regex pattern
-                                      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                                      if (!emailRegex.hasMatch(value)) {
-                                        return 'Please enter a valid email address';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  SizedBox(height: 15.0),
-                                  CustomTextFormField(
-                                    icon: Icons.phone_outlined,
-                                    hintText: 'Phone',
-                                    controller: _phoneController,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter your phone number';
-                                      }
-                                      if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                                        return 'Please enter a valid phone number';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  SizedBox(height: 15.0),
+                                  SizedBox(height: 20.0),
                                   CustomTextFormField(
                                     icon: Icons.person_outlined,
                                     hintText: 'Username',
@@ -208,76 +217,109 @@ class _SignUpPageState extends State<SignUpPage> {
                                     icon: Icons.lock_outlined,
                                     hintText: 'Password',
                                     controller: _passwordController,
-                                    obscureText: true,  // This ensures the password is hidden
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter your password';
-                                      }
-                                      // You can add more password validation here if needed
-                                      return null;
-                                    },
+                                    obscureText: true,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.person_outlined,
+                                    hintText: 'Full Name',
+                                    controller: _fullNameController,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  CustomTextFormField(
+                                    icon: Icons.email_outlined,
+                                    hintText: 'Email',
+                                    controller: _emailController,
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  // CustomTextFormField(
+                                  //   icon: Icons.phone_outlined,
+                                  //   hintText: 'Phone',
+                                  //   controller: _phoneController,
+                                  // ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: CustomTextFormField(
+                                          icon: Icons.phone,
+                                          hintText: 'Phone Number',
+                                          controller: _phoneController,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      ElevatedButton(
+                                        onPressed: _requestOTP,
+                                        child: Text('Get OTP'),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: CustomTextFormField(
+                                          icon: Icons.lock,
+                                          hintText: 'OTP Code',
+                                          controller: _otpController,
+                                        ),
+                                      ),
+                                      // SizedBox(width: 10),
+                                      // ElevatedButton(
+                                      //   onPressed: _verifyOTP,
+                                      //   child: Text('Verify OTP'),
+                                      // ),
+                                    ],
                                   ),
                                   SizedBox(height: 15.0),
                                   GestureDetector(
-                                    onTap: () {
-                                      showDatePicker(
+                                    onTap: () async {
+                                      final DateTime? picked = await showDatePicker(
                                         context: context,
                                         initialDate: DateTime.now(),
                                         firstDate: DateTime(1900),
                                         lastDate: DateTime.now(),
-                                      ).then((pickedDate) {
-                                        if (pickedDate != null) {
-                                          setState(() {
-                                            _selectedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
-                                            _dateOfBirthController.text = _selectedDate;
-                                          });
-                                        }
-                                      });
+                                      );
+                                      if (picked != null) {
+                                        setState(() {
+                                          _dateOfBirthController.text = "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+                                        });
+                                      }
                                     },
                                     child: AbsorbPointer(
                                       child: CustomTextFormField(
                                         icon: Icons.calendar_today,
-                                        hintText: _selectedDate,
+                                        hintText: 'Date of Birth',
                                         controller: _dateOfBirthController,
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty || value == 'Select Date of Birth') {
-                                            return 'Please select your date of birth';
-                                          }
-                                          return null;
-                                        },
                                       ),
                                     ),
                                   ),
                                   SizedBox(height: 15.0),
-                                  DropdownButtonFormField<String>(
-                                    value: _selectedSex,
-                                    decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.person_outline),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        borderSide: BorderSide(color: Colors.grey),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.person_outline, color: Colors.grey),
+                                      SizedBox(width: 10),
+                                      Text('Sex:', style: TextStyle(color: Colors.grey)),
+                                      Radio<String>(
+                                        value: 'Male',
+                                        groupValue: _sexController.text,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _sexController.text = value!;
+                                          });
+                                        },
                                       ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        borderSide: BorderSide(color: Colors.grey),
+                                      Text('Male'),
+                                      Radio<String>(
+                                        value: 'Female',
+                                        groupValue: _sexController.text,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _sexController.text = value!;
+                                          });
+                                        },
                                       ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        borderSide: BorderSide(color: Color(0xFFff5c30)),
-                                      ),
-                                    ),
-                                    items: <String>['Male', 'Female', 'Others']
-                                        .map<DropdownMenuItem<String>>((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _selectedSex = newValue!;
-                                      });
-                                    },
+                                      Text('Female'),
+                                    ],
                                   ),
                                   SizedBox(height: 15.0),
                                   CustomTextFormField(
@@ -285,29 +327,30 @@ class _SignUpPageState extends State<SignUpPage> {
                                     hintText: 'Facebook',
                                     controller: _facebookController,
                                   ),
+                                  
                                   SizedBox(height: 20.0),
                                   GestureDetector(
                                     onTap: _pickAndUploadAvatar,
                                     child: Container(
-                                      height: 100,
-                                      width: 100,
+                                      height: 60,
+                                      width: 60,
                                       decoration: BoxDecoration(
                                         color: Colors.grey[200],
-                                        borderRadius: BorderRadius.circular(50),
+                                        borderRadius: BorderRadius.circular(40),
                                       ),
                                       child: _avatarFile != null
                                           ? ClipRRect(
-                                              borderRadius: BorderRadius.circular(50),
+                                              borderRadius: BorderRadius.circular(40),
                                               child: Image.file(_avatarFile!, fit: BoxFit.cover),
                                             )
-                                          : Icon(Icons.add_a_photo, size: 40),
+                                          : Icon(Icons.add_a_photo, size: 30),
                                     ),
                                   ),
-                                  SizedBox(height: 30.0),
+                                  SizedBox(height: 20.0),
                                   GestureDetector(
                                     onTap: _signUp,
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(vertical: 15.0),
+                                      padding: EdgeInsets.symmetric(vertical: 12.0),
                                       width: double.infinity,
                                       decoration: AppStyles.getButtonDecoration(),
                                       child: Center(
@@ -315,7 +358,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 20.0),
+                                  SizedBox(height: 15.0),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => signInPage()));
