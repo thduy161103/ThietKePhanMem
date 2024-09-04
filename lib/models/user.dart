@@ -9,6 +9,7 @@ class User {
   final String sex;
   final String facebook;
   final String role;
+  final String otp;
 
   User({
     required this.fullName,
@@ -21,6 +22,7 @@ class User {
     required this.sex,
     required this.facebook,
     required this.role,
+    required this.otp,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class User {
       sex: json['sex'],
       facebook: json['facebook'],
       role: json['role'],
+      otp: json['otp'],
     );
   }
 
@@ -50,6 +53,7 @@ class User {
       'sex': sex,
       'facebook': facebook,
       'role': role,
+      'otp': otp,
     };
   }
 }

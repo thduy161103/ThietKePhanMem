@@ -56,27 +56,27 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
-  void _verifyOTP() async {
-    try {
-      final response = await OtpRequest.verifyOtpInSignUp(_usernameController.text.toString(), _otpController.text.toString());
-      if (response.statusCode == 200) {
-        setState(() {
-          _isOtpVerified = true;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('OTP verified successfully')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('OTP verification failed: ${response.body}')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('OTP verification failed: $e')),
-      );
-    }
-  }
+  // void _verifyOTP() async {
+  //   try {
+  //     final response = await OtpRequest.verifyOtpInSignUp(_usernameController.text.toString(), _otpController.text.toString());
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         _isOtpVerified = true;
+  //       });
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('OTP verified successfully')),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('OTP verification failed: ${response.body}')),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('OTP verification failed: $e')),
+  //     );
+  //   }
+  // }
 
   void _signUp() async {
     if (_formKey.currentState!.validate() && _isOtpVerified) {
@@ -91,6 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
         sex: _sexController.text,
         facebook: _facebookController.text,
         role: _roleController.text,
+        otp: _otpController.text,
       );
 
       try {
@@ -262,11 +263,11 @@ class _SignUpPageState extends State<SignUpPage> {
                                           controller: _otpController,
                                         ),
                                       ),
-                                      SizedBox(width: 10),
-                                      ElevatedButton(
-                                        onPressed: _verifyOTP,
-                                        child: Text('Verify OTP'),
-                                      ),
+                                      // SizedBox(width: 10),
+                                      // ElevatedButton(
+                                      //   onPressed: _verifyOTP,
+                                      //   child: Text('Verify OTP'),
+                                      // ),
                                     ],
                                   ),
                                   SizedBox(height: 15.0),
