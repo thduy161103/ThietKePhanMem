@@ -148,6 +148,7 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(15),
                             ),
                             elevation: 4,
+                            color: Colors.white, // Add this line to set the background color to white
                             child: Column(
                               children: [
                                 ClipRRect(
@@ -224,7 +225,10 @@ class _HomePageState extends State<HomePage> {
                                     alignment: Alignment.centerRight,
                                     child: ElevatedButton(
                                       onPressed: () => _onEventTap(event),
-                                      child: Text('Xem chi tiết'),
+                                      child: Text(
+                                        'Xem chi tiết',
+                                        style: TextStyle(color: Colors.white), // Add this line to set the text color to white
+                                      ),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Color(0xFFff5c30),
                                         shape: RoundedRectangleBorder(

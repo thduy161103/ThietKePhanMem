@@ -21,24 +21,25 @@ class MyDrawer extends StatelessWidget {
               height: 200,
               child: DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Colors.transparent,
+                  color: Colors.white,
+                  // Removed the borderRadius
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Color(0xFFff5c30),
                       child: Text(
                         user.username.isNotEmpty ? user.username[0].toUpperCase() : '',
-                        style: TextStyle(fontSize: 40.0, color: Color(0xFFff5c30)),
+                        style: TextStyle(fontSize: 40.0, color: Colors.white),
                       ),
                     ),
                     SizedBox(height: 10),
                     Text(
                       user.username,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -46,7 +47,7 @@ class MyDrawer extends StatelessWidget {
                     Text(
                       user.email,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black54,
                         fontSize: 14,
                       ),
                     ),

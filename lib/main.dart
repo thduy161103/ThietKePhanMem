@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:musicapp/screens/homepage.dart';
 //import 'package:musicapp/screens/drawer.dart';
 //import 'package:musicapp/home.dart';
 //import 'package:musicapp/screens/otppage.dart';
@@ -48,7 +49,7 @@ class _MyAppState extends State<MyApp> {
         ),
         useMaterial3: true,
       ),
-      home: signInPage(), // Set the home to QuizScreen for testing
+      home: HomePage(), // Set the home to QuizScreen for testing
       //home: widget.isLoggin ? HomePage() : signInPage(),
     );
   }
