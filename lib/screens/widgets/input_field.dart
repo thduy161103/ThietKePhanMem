@@ -6,24 +6,25 @@ class CustomTextFormField extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
   final bool obscureText;
+  final String? Function(String?)? validator;
 
   CustomTextFormField({
     required this.icon,
     required this.hintText,
     required this.controller,
-    this.obscureText = false,
+    this.obscureText = false,  // Default to false, but can be set to true for passwords
+    this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      obscureText: obscureText,
+      obscureText: obscureText,  // This will hide the text if set to true
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: AppStyles.getTextFieldStyle(),
-        prefixIcon: Icon(icon, size: 20),
-        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        prefixIcon: Icon(icon),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.grey),
@@ -37,7 +38,7 @@ class CustomTextFormField extends StatelessWidget {
           borderSide: BorderSide(color: Color(0xFFff5c30)),
         ),
       ),
-      validator: (value) {
+      validator: validator ?? (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter $hintText';
         }

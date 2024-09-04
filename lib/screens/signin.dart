@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'otppage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../network/signin.dart';
 import 'signup.dart';
+ // Add this import
+import '../models/user.dart'; // Add this import
 
 class signInPage extends StatefulWidget {
   const signInPage({super.key});
@@ -84,7 +87,7 @@ class _signInPageState extends State<signInPage> {
                   children: [
                     Center(
                       child: Image.asset(
-                        "assets/images/logo.png",
+                        "images/logo.png",
                         width: MediaQuery.of(context).size.width / 1.5,
                         fit: BoxFit.cover,
                       ),
@@ -161,14 +164,20 @@ class _signInPageState extends State<signInPage> {
                               GestureDetector(
                                 onTap: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    final userInfo = await SignInRequest.signIn(
+                                    final user = await SignInRequest.signIn(
                                       context,
                                       _usernameController.text,
                                       _passwordController.text,
                                     );
-                                    if (userInfo != null) {
-                                      await _saveUserInfo(userInfo.username, userInfo.email, true);
-                                      Navigator.pushReplacementNamed(context, '/home');
+                                    if (user != null) {
+                                      await _saveUserInfo(user.username, user.email, true);
+                                      // Navigate to OTP screen with User object
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => OtpPage(username: user.username),
+                                        ),
+                                      );
                                     }
                                   }
                                 },

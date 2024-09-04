@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/intl.dart';
 import 'package:musicapp/screens/signin.dart';
 import '../models/user.dart';
 import '../network/api_service.dart';
 import 'widgets/input_field.dart';
 import '../utils/app_styles.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'; // Add this import instead
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -25,12 +27,13 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _avatarController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
-  final TextEditingController _sexController = TextEditingController();
   final TextEditingController _facebookController = TextEditingController();
-  final TextEditingController _roleController = TextEditingController();
 
   File? _avatarFile;
   final ImagePicker _picker = ImagePicker();
+
+  String _selectedSex = 'Male'; // Default value
+  String _selectedDate = 'Select Date of Birth';
 
   void _signUp() async {
     if (_formKey.currentState!.validate()) {
@@ -42,27 +45,24 @@ class _SignUpPageState extends State<SignUpPage> {
         password: _passwordController.text,
         avatar: _avatarController.text,
         dateOfBirth: _dateOfBirthController.text,
-        sex: _sexController.text,
+        sex: _selectedSex, // Use _selectedSex here
         facebook: _facebookController.text,
-        role: _roleController.text,
+        role: "ROLE_USER",
       );
 
       try {
-        //final response = await _dio.post('http://desktop-a2g83h7:8080/auth/register', data: newUser.toJson());
-         final response = await _apiService.post('auth/register', newUser.toJson());
+        final response = await _apiService.post('auth/register', newUser.toJson());
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Sign up successful')),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-
             SnackBar(content: Text('Failed to sign up: ${response.data}')),
           );
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-
           SnackBar(content: Text('Failed to sign up: $e')),
         );
       }
@@ -159,7 +159,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               child: Column(
                                 children: [
                                   Text("Sign up", style: AppStyles.getHeadlineStyle()),
-                                  SizedBox(height: 20.0),
+                                  SizedBox(height: 30.0),
                                   CustomTextFormField(
                                     icon: Icons.person_outlined,
                                     hintText: 'Full Name',
@@ -170,12 +170,32 @@ class _SignUpPageState extends State<SignUpPage> {
                                     icon: Icons.email_outlined,
                                     hintText: 'Email',
                                     controller: _emailController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your email';
+                                      }
+                                      // Email regex pattern
+                                      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                                      if (!emailRegex.hasMatch(value)) {
+                                        return 'Please enter a valid email address';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                   SizedBox(height: 15.0),
                                   CustomTextFormField(
                                     icon: Icons.phone_outlined,
                                     hintText: 'Phone',
                                     controller: _phoneController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your phone number';
+                                      }
+                                      if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                                        return 'Please enter a valid phone number';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                   SizedBox(height: 15.0),
                                   CustomTextFormField(
@@ -188,19 +208,76 @@ class _SignUpPageState extends State<SignUpPage> {
                                     icon: Icons.lock_outlined,
                                     hintText: 'Password',
                                     controller: _passwordController,
-                                    obscureText: true,
+                                    obscureText: true,  // This ensures the password is hidden
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your password';
+                                      }
+                                      // You can add more password validation here if needed
+                                      return null;
+                                    },
                                   ),
                                   SizedBox(height: 15.0),
-                                  CustomTextFormField(
-                                    icon: Icons.calendar_today,
-                                    hintText: 'Date of Birth',
-                                    controller: _dateOfBirthController,
+                                  GestureDetector(
+                                    onTap: () {
+                                      showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime.now(),
+                                      ).then((pickedDate) {
+                                        if (pickedDate != null) {
+                                          setState(() {
+                                            _selectedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
+                                            _dateOfBirthController.text = _selectedDate;
+                                          });
+                                        }
+                                      });
+                                    },
+                                    child: AbsorbPointer(
+                                      child: CustomTextFormField(
+                                        icon: Icons.calendar_today,
+                                        hintText: _selectedDate,
+                                        controller: _dateOfBirthController,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty || value == 'Select Date of Birth') {
+                                            return 'Please select your date of birth';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(height: 15.0),
-                                  CustomTextFormField(
-                                    icon: Icons.person_outline,
-                                    hintText: 'Sex',
-                                    controller: _sexController,
+                                  DropdownButtonFormField<String>(
+                                    value: _selectedSex,
+                                    decoration: InputDecoration(
+                                      prefixIcon: Icon(Icons.person_outline),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(color: Colors.grey),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(color: Colors.grey),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(color: Color(0xFFff5c30)),
+                                      ),
+                                    ),
+                                    items: <String>['Male', 'Female', 'Others']
+                                        .map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _selectedSex = newValue!;
+                                      });
+                                    },
                                   ),
                                   SizedBox(height: 15.0),
                                   CustomTextFormField(
@@ -208,35 +285,29 @@ class _SignUpPageState extends State<SignUpPage> {
                                     hintText: 'Facebook',
                                     controller: _facebookController,
                                   ),
-                                  SizedBox(height: 15.0),
-                                  CustomTextFormField(
-                                    icon: Icons.person,
-                                    hintText: 'Role',
-                                    controller: _roleController,
-                                  ),
                                   SizedBox(height: 20.0),
                                   GestureDetector(
                                     onTap: _pickAndUploadAvatar,
                                     child: Container(
-                                      height: 60,
-                                      width: 60,
+                                      height: 100,
+                                      width: 100,
                                       decoration: BoxDecoration(
                                         color: Colors.grey[200],
-                                        borderRadius: BorderRadius.circular(40),
+                                        borderRadius: BorderRadius.circular(50),
                                       ),
                                       child: _avatarFile != null
                                           ? ClipRRect(
-                                              borderRadius: BorderRadius.circular(40),
+                                              borderRadius: BorderRadius.circular(50),
                                               child: Image.file(_avatarFile!, fit: BoxFit.cover),
                                             )
-                                          : Icon(Icons.add_a_photo, size: 30),
+                                          : Icon(Icons.add_a_photo, size: 40),
                                     ),
                                   ),
-                                  SizedBox(height: 20.0),
+                                  SizedBox(height: 30.0),
                                   GestureDetector(
                                     onTap: _signUp,
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                                      padding: EdgeInsets.symmetric(vertical: 15.0),
                                       width: double.infinity,
                                       decoration: AppStyles.getButtonDecoration(),
                                       child: Center(
@@ -244,7 +315,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 15.0),
+                                  SizedBox(height: 20.0),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => signInPage()));

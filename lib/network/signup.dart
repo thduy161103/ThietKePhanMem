@@ -43,7 +43,7 @@ class signUpRequest {
       // If the server returns an OK response, navigate to the OTP page
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => OtpPage()),
+        MaterialPageRoute(builder: (context) => OtpPage(username: username)),
       );
     } else {
       // If the server did not return an OK response, show an error message
