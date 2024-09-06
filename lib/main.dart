@@ -16,10 +16,12 @@ import 'package:musicapp/screens/quiz/quiz_screen.dart';
 import 'screens/signin.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 //import 'firebase_options.dart';
 //import 'screens/signup.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 

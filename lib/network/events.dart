@@ -3,10 +3,11 @@ import 'package:http/http.dart' as http;
 import 'package:musicapp/models/event_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/event.dart';
+import '../config/environment.dart';
 
 class EventRequest {
-  static const String url = 'http://macbookair:5001/brand/api/event/allevent/';
-  static const String baseUrl = 'http://macbookair:5001/brand/api/event/';
+  static final String baseUrl = '${Environment.baseUrl}/brand/api/event/';
+  static final String url = '${baseUrl}allevent/';
 
   static Future<List<Event>> fetchEvents() async {
     print('Fetching events from: $url');

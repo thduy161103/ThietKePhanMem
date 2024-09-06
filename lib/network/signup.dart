@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
 import '../screens/otppage.dart';
+import '../config/environment.dart';
 
 class signUpRequest {
   //thay đổi url thành api phù hợp
-  static const String urlFetch = 'https://api.eventonapp.com/api/auth/register';
-  static const String urlPost = 'https://api.eventonapp.com/api/auth/register';
+  static String urlFetch = '${Environment.baseUrl}/api/auth/register';
+  static String urlPost = '${Environment.baseUrl}/api/auth/register';
 
   static List<User> parseUser(String responseBody) {
     var list = json.decode(responseBody) as List<dynamic>;

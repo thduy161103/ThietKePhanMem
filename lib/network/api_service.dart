@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
+import '../config/environment.dart';
 
 class ApiService {
   final Dio _dio = Dio();
 
   ApiService() {
-    _dio.options.baseUrl = 'http://macbookair:8080/';
+    _dio.options.baseUrl = '${Environment.baseUrl}/';
     _dio.options.headers = {
       'Content-Type': 'application/json; charset=UTF-8',
     };

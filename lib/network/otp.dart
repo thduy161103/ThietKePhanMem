@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/homepage.dart';
+import '../config/environment.dart';
 
 class OtpRequest {
-  static const String url = 'http://macbookair:8080/auth/validate-otp';
+  static String url = '${Environment.baseUrl}/auth/validate-otp';
 
   static Future<http.Response> requestOtp(String phoneNumber) async { 
     final response = await http.post(
-      Uri.parse('http://macbookair:8080/auth/validate-phone'),
+      Uri.parse('${Environment.baseUrl}/auth/validate-phone'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -21,7 +22,7 @@ class OtpRequest {
   }
   static Future<http.Response> verifyOtpInSignUp(String otp, String username) async {
     final response = await http.post(
-      Uri.parse('http://macbookair:8080/auth/validate-otp'),
+      Uri.parse('${Environment.baseUrl}/auth/validate-otp'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
