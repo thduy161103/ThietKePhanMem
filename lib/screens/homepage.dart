@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musicapp/screens/event_details_screen.dart';
+import 'package:musicapp/screens/signin.dart'; // Add this import
 import 'package:musicapp/songlist.dart';
 import 'package:coupon_uikit/coupon_uikit.dart';
 import 'clickapp.dart';
@@ -22,7 +23,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<Map<String, dynamic>> _initFuture;
+  late Future<Map<String, dynamic>?> _initFuture;
 
   @override
   void initState() {
@@ -30,11 +31,11 @@ class _HomePageState extends State<HomePage> {
     _initFuture = _initializeData();
   }
 
-  Future<Map<String, dynamic>> _initializeData() async {
+  Future<Map<String, dynamic>?> _initializeData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('accessToken');
     if (token == null) {
-      throw Exception('No token found');
+      return null; // Return null instead of throwing an exception
     }
 
     try {
@@ -69,20 +70,27 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
+    return FutureBuilder<Map<String, dynamic>?>(
       future: _initFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
+        } else if (snapshot.data == null) {
+          // Navigate to SignInPage if data is null (no token)
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => signInPage()),
+              (Route<dynamic> route) => false,
+            );
+          });
+          return Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         } else if (snapshot.hasError) {
           return Scaffold(
             body: Center(child: Text('Error: ${snapshot.error}')),
-          );
-        } else if (!snapshot.hasData) {
-          return Scaffold(
-            body: Center(child: Text('No data available')),
           );
         }
 

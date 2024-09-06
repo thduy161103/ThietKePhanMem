@@ -13,7 +13,7 @@ class MyDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        decoration: AppStyles.getGradientDecoration(),
+        color: Colors.white,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -56,8 +56,8 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.home, color: Colors.white),
-              title: Text('Home', style: TextStyle(color: Colors.white)),
+              leading: Icon(Icons.home, color: Colors.black),
+              title: Text('Home', style: TextStyle(color: Colors.black)),
               onTap: () {
                 Navigator.pop(context); // Close the drawer
                 Navigator.pushReplacement(
@@ -67,26 +67,19 @@ class MyDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(Icons.person, color: Colors.white),
-              title: Text('Profile', style: TextStyle(color: Colors.white)),
+              leading: Icon(Icons.card_giftcard, color: Colors.black),
+              title: Text('Vouchers', style: TextStyle(color: Colors.black)),
               onTap: () {
                 // Navigate to profile page
               },
-            ),
+            ), 
             ListTile(
-              leading: Icon(Icons.settings, color: Colors.white),
-              title: Text('Settings', style: TextStyle(color: Colors.white)),
-              onTap: () {
-                // Navigate to settings page
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app, color: Colors.white),
-              title: Text('Logout', style: TextStyle(color: Colors.white)),
+              leading: Icon(Icons.exit_to_app, color: Colors.black),
+              title: Text('Logout', style: TextStyle(color: Colors.black)),
               onTap: () async {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.clear();
-                Navigator.pushReplacementNamed(context, '/login');
+                Navigator.pushReplacementNamed(context, '/');
               },
             ),
           ],
