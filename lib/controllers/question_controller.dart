@@ -2,10 +2,17 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/question.dart';
 import '../screens/result_screen.dart';
 
 class QuestionController extends GetxController with SingleGetTickerProviderMixin {
+  final String eventId;
+
+  QuestionController({required this.eventId}) {
+    print("QuestionController initialized with eventId: $eventId");
+  }
+
   late AnimationController _animationController;
   late Animation<double> _animation;
   Animation<double> get animation => _animation;
@@ -47,16 +54,22 @@ class QuestionController extends GetxController with SingleGetTickerProviderMixi
   }
 
   Future<void> fetchQuestions() async {
+    print("Fetching questions for eventId: $eventId");
     isLoading.value = true;
     try {
-      final response = await http.post(
-        Uri.parse('http://macbookair:8080/brand/api/event/fetchquestion'),
+      final prefs = await SharedPreferences.getInstance();
+      final String? jwtToken = prefs.getString('accessToken');
+
+      if (jwtToken == null) {
+        throw Exception('JWT token not found');
+      }
+
+      final response = await http.get(
+        Uri.parse('http://macbookair:8080/brand/api/event/fetchquestion/$eventId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $jwtToken',
         },
-        body: jsonEncode(<String, String>{
-          'id_sukien': 'EV00000001',
-        }),
       );
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -122,15 +135,11 @@ class QuestionController extends GetxController with SingleGetTickerProviderMixi
       _animationController.reset();
       _animationController.forward().whenComplete(() {
         if (_questionNumber.value == questions.length) {
-          // End of quiz
-          print("Quiz finished. Navigating to result screen.");
           _animationController.stop();
           Get.off(() => ResultScreen());
         }
       });
     } else {
-      // Ensure navigation happens if we're already at the last question
-      print("Quiz finished. Navigating to result screen.");
       _animationController.stop();
       Get.off(() => ResultScreen());
     }

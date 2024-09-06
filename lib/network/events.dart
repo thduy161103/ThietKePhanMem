@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:musicapp/models/event_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/event.dart';
 
 class EventRequest {
-  static const String url = 'http://macbookair:6969/brand/api/event/';
+  static const String url = 'http://macbookair:5001/brand/api/event/allevent/';
+  static const String baseUrl = 'http://macbookair:5001/brand/api/event/';
 
   static Future<List<Event>> fetchEvents() async {
     print('Fetching events from: $url');
@@ -42,6 +44,17 @@ class EventRequest {
     } catch (e) {
       print('Error occurred while fetching events: $e');
       rethrow;
+    }
+  }
+
+  static Future<EventDetail> fetchEventDetail(String eventId) async {
+    final response = await http.get(Uri.parse('$baseUrl/detailevent/$eventId'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      return EventDetail.fromJson(jsonData['events'][0]);
+    } else {
+      throw Exception('Failed to load event details');
     }
   }
 }

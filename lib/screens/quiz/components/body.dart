@@ -8,14 +8,21 @@ import 'progress_bar.dart';
 import 'question_card.dart';
 
 class Body extends StatelessWidget {
-  const Body({Key? key}) : super(key: key);
+  final String eventId;
+  const Body({Key? key, required this.eventId}) : super(key: key) ;
 
   @override
   Widget build(BuildContext context) {
-    QuestionController _questionController = Get.put(QuestionController());
+    print("Building Body widget");
+    QuestionController _questionController = Get.put(QuestionController(eventId: eventId));
     return Stack(
       children: [
-        SvgPicture.asset("assets/icons/bg.svg", fit: BoxFit.fill),
+        Positioned.fill(
+          child: SvgPicture.asset(
+            "assets/icons/bg.svg",
+            fit: BoxFit.cover,
+          ),
+        ),
         SafeArea(
           child: Obx(() {
             if (_questionController.isLoading.value) {
@@ -55,13 +62,16 @@ class Body extends StatelessWidget {
                   Divider(thickness: 1.5),
                   SizedBox(height: kDefaultPadding),
                   Expanded(
-                    child: PageView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      controller: _questionController.pageController,
-                      onPageChanged: _questionController.updateTheQnNum,
-                      itemCount: _questionController.questions.length,
-                      itemBuilder: (context, index) => QuestionCard(
-                        question: _questionController.questions[index],
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: kDefaultPadding),
+                      child: PageView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: _questionController.pageController,
+                        onPageChanged: _questionController.updateTheQnNum,
+                        itemCount: _questionController.questions.length,
+                        itemBuilder: (context, index) => QuestionCard(
+                          question: _questionController.questions[index],
+                        ),
                       ),
                     ),
                   ),

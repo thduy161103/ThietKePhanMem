@@ -5,23 +5,20 @@ import 'package:musicapp/controllers/question_controller.dart';
 import 'components/body.dart';
 
 class QuizScreen extends StatelessWidget {
+  final String eventId;
+
+  const QuizScreen({Key? key, required this.eventId}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    QuestionController _controller = Get.put(QuestionController());
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        // Fluttter show the back button automatically
         backgroundColor: Colors.transparent,
         elevation: 0,
-        actions: [
-          TextButton(
-            onPressed: _controller.nextQuestion,
-            child: Text("Skip"),
-          ),
-        ],
+        automaticallyImplyLeading: false, // This removes the back button
       ),
-      body: Body(),
+      body: Body(eventId: eventId),
     );
   }
 }

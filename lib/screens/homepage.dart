@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:musicapp/screens/event_details_screen.dart';
 import 'package:musicapp/songlist.dart';
 import 'package:coupon_uikit/coupon_uikit.dart';
 import 'clickapp.dart';
@@ -54,22 +55,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onEventTap(Event event) {
-    if (event.tenSuKien == 'Shake App Challenge') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ShakeApp()),
-      );
-    } else if (event.tenSuKien == 'Click App Challenge') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ClickApp()),
-      );
-    } else {
-      // Handle other event types or show a default screen
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Chi tiết sự kiện chưa ược cập nhật')),
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventDetailsScreen(eventId: event.idSuKien, eventGame: event.gameName),
+      ),
+    );
   }
 
   void _openDrawer(BuildContext context) {
