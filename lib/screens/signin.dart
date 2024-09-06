@@ -85,13 +85,7 @@ class _signInPageState extends State<signInPage> {
                 right: 20.0,
                 child: Column(
                   children: [
-                    Center(
-                      child: Image.asset(
-                        "images/logo.png",
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                   
                     SizedBox(height: 50.0),
                     Material(
                       elevation: 5.0,
