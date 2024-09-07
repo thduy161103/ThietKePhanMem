@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/app_styles.dart';
 import '../models/user.dart'; // Import the user model
+import 'all_vouchers_page.dart';
 import 'homepage.dart';
 import 'my_voucher_page.dart';
 
@@ -79,6 +80,17 @@ class MyDrawer extends StatelessWidget {
                 );
               },
             ), 
+            ListTile(
+              leading: Icon(Icons.list, color: Colors.black),
+              title: Text('All Vouchers', style: TextStyle(color: Colors.black)),
+              onTap: () {
+                Navigator.pop(context); // Đóng drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AllVouchersPage()),
+                );
+              },
+            ),
             ListTile(
               leading: Icon(Icons.exit_to_app, color: Colors.black),
               title: Text('Logout', style: TextStyle(color: Colors.black)),

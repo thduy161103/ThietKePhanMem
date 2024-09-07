@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import '../network/point.dart';
 import '../network/voucher.dart';
 
 class ShakeApp extends StatefulWidget {
@@ -25,6 +26,7 @@ class _ShakeAppState extends State<ShakeApp> with SingleTickerProviderStateMixin
   late String eventId;
   late AnimationController _animationController;
   late Animation<double> _animation;
+  StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
 
   @override
   void initState() {
@@ -49,14 +51,13 @@ class _ShakeAppState extends State<ShakeApp> with SingleTickerProviderStateMixin
         if (_countdown > 0) {
           _countdown--;
         } else {
-          _timer?.cancel();
-          _gameStarted = false;
-          showExchangeDialog();
+          _endGame();
         }
       });
     });
 
-    accelerometerEvents.listen((AccelerometerEvent event) {
+    _accelerometerSubscription = accelerometerEvents.listen((AccelerometerEvent event) {
+      if (!_gameStarted) return;
       double deltaX = (event.x - _lastX).abs();
       double deltaY = (event.y - _lastY).abs();
       double deltaZ = (event.z - _lastZ).abs();
@@ -72,40 +73,46 @@ class _ShakeAppState extends State<ShakeApp> with SingleTickerProviderStateMixin
     });
   }
 
-  void showExchangeDialog() async {
-    // Calculate voucher quantity
-    int voucherQuantity = (shakeCount / 10).floor();
+  void _endGame() {
+    _timer?.cancel();
+    _accelerometerSubscription?.cancel();
+    setState(() {
+      _gameStarted = false;
+    });
+    showExchangeDialog();
+  }
 
-    // Call API to update voucher
+  void showExchangeDialog() async {
+    // int voucherQuantity = (shakeCount / 10).floor();
+    // final prefs = await SharedPreferences.getInstance();
+    // final token = prefs.getString('accessToken');
+    // Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
+    // String userId = decodedToken['id'] as String;
+    // List<Map<String, dynamic>> voucherIds = await VoucherRequest.fetchVoucherForEvent(eventId);
+    // bool success = await VoucherRequest.updateVoucherAfterGame(userId, voucherIds[0]['id'], voucherQuantity, voucherIds[0]['point']);
+
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('accessToken');
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
     String userId = decodedToken['id'] as String;
-    List<String> voucherIds = await VoucherRequest.fetchVoucherIdsForEvent(eventId);
 
-    bool success = await VoucherRequest.updateVoucherAfterGame(userId, voucherIds[0], voucherQuantity);
-
-    // Show result
+    bool success = await PointRequest.updatePoint(userId, shakeCount);
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(success ? 'Chúc mừng!' : 'Thông báo'),
           content: Text(
             success
-                ? 'Bạn đã nhận được $voucherQuantity voucher!'
-                : 'Có lỗi xảy ra khi cập nhật voucher. Vui lòng thử lại sau.',
+                ? 'Bạn đã giành được thêm ${shakeCount} điểm!'
+                : 'Có lỗi xảy ra khi cập nhật điểm. Vui lòng thử lại sau.',
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                // Reset game state
-                setState(() {
-                  shakeCount = 0;
-                  _gameStarted = false;
-                  _countdown = 10;
-                });
+                Navigator.of(context).pop(); // Đóng dialog
+                Navigator.of(context).pushReplacementNamed('/home'); // Chuyển đến HomePage
               },
               child: Text('Đóng'),
             ),
@@ -118,6 +125,7 @@ class _ShakeAppState extends State<ShakeApp> with SingleTickerProviderStateMixin
   @override
   void dispose() {
     _timer?.cancel();
+    _accelerometerSubscription?.cancel();
     _animationController.dispose();
     super.dispose();
   }

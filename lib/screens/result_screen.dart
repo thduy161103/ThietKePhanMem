@@ -6,6 +6,10 @@ import 'package:musicapp/screens/homepage.dart';
 import '../controllers/question_controller.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import '../network/point.dart';
+
 
 class ResultScreen extends StatefulWidget {
   @override
@@ -15,12 +19,50 @@ class ResultScreen extends StatefulWidget {
 class _ResultScreenState extends State<ResultScreen> {
   final QuestionController _qnController = Get.find<QuestionController>();
   late ConfettiController _confettiController;
+  bool _isUpdatingPoints = false;
+  int _earnedPoints = 0;
 
   @override
   void initState() {
     super.initState();
     _confettiController = ConfettiController(duration: const Duration(seconds: 5));
     _confettiController.play();
+    _updateUserPoints();
+  }
+
+  Future<void> _updateUserPoints() async {
+    setState(() {
+      _isUpdatingPoints = true;
+    });
+
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('accessToken');
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
+    String userId = decodedToken['id'] as String;
+
+    // Tính điểm dựa trên số câu trả lời đúng
+    _earnedPoints = _qnController.numOfCorrectAns * 10; // Giả sử mỗi câu đúng được 10 điểm
+
+    try {
+      bool success = await PointRequest.updatePoint(userId, _earnedPoints);
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đã cộng thêm $_earnedPoints điểm!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Có lỗi xảy ra khi cập nhật điểm.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Có lỗi xảy ra: $e')),
+      );
+    } finally {
+      setState(() {
+        _isUpdatingPoints = false;
+      });
+    }
   }
 
   @override
@@ -35,12 +77,10 @@ class _ResultScreenState extends State<ResultScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // SVG Background
           SvgPicture.asset(
             "assets/icons/bg.svg",
             fit: BoxFit.fill,
           ),
-          // Content
           SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -77,6 +117,17 @@ class _ResultScreenState extends State<ResultScreen> {
                           color: Colors.grey.shade700,
                         ),
                       ),
+                      SizedBox(height: 20),
+                      _isUpdatingPoints
+                          ? CircularProgressIndicator()
+                          : Text(
+                              "Earned Points: $_earnedPoints",
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
                     ],
                   ),
                 ),

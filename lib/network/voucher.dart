@@ -8,7 +8,34 @@ import '../config/environment.dart';
 class VoucherRequest {
   static final String baseUrl = '${Environment.baseUrl}';
 
-  static Future<List<String>> fetchVoucherIdsForEvent(String eventId) async {
+  static Future<List<Map<String, dynamic>>> fetchAllVoucher() async { 
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('accessToken') ?? '';
+
+      final response = await http.get(
+        Uri.parse('http://10.0.2.2:5000/brand/api/voucher/allvoucher/'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['success'] && jsonData['vouchers'] is List) {
+          return List<Map<String, dynamic>>.from(jsonData['vouchers']);
+        } else {
+          throw Exception('No vouchers found');
+        }
+      } else {
+        throw Exception('Failed to load vouchers');
+      }
+    } catch (e) {
+      print('Error occurred while fetching vouchers: $e');
+      rethrow;
+    }
+  }
+  static Future<List<Map<String, dynamic>>> fetchVoucherForEvent(String eventId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('accessToken') ?? '';
@@ -23,9 +50,10 @@ class VoucherRequest {
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         if (jsonData['success'] && jsonData['voucher'] is List) {
-          return (jsonData['voucher'] as List)
-              .map((v) => v['id_voucher'] as String)
-              .toList();
+          return (jsonData['voucher'] as List).map((voucher) => {
+            'id': voucher['id_voucher'] as String,
+            'point': voucher['point'] as int,
+          }).toList();
         } else {
           throw Exception('No vouchers found for this event');
         }
@@ -38,7 +66,7 @@ class VoucherRequest {
     }
   }
 
-  static Future<bool> updateVoucherAfterGame(String userId, String voucherId, int quantity) async {
+  static Future<bool> updateVoucherAfterGame(String userId, String voucherId, int quantity, int point) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('accessToken') ?? '';
@@ -52,6 +80,7 @@ class VoucherRequest {
         body: jsonEncode({
           'voucherId': voucherId,
           'quantity': quantity,
+          'point': point,
         }),
       );
 

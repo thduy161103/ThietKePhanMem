@@ -2,6 +2,7 @@ import 'voucher_detail.dart';
 
 class Voucher {
   final String idVoucher;
+  int? point;
   final String? ten;
   final String? hinhanh;
   final String? trigia;
@@ -15,6 +16,7 @@ class Voucher {
     this.hinhanh,
     this.trigia,
     this.detail,
+    this.point,
   });
 
   // Update fromJson method if needed

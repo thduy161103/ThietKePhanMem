@@ -1,9 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:musicapp/network/point.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../network/voucher.dart';
 
 class ClickApp extends StatefulWidget {
@@ -35,6 +34,7 @@ class _ClickAppState extends State<ClickApp> with SingleTickerProviderStateMixin
   }
 
   void _incrementCounter() {
+    if (!_gameStarted) return;
     setState(() {
       _counter++;
     });
@@ -53,48 +53,52 @@ class _ClickAppState extends State<ClickApp> with SingleTickerProviderStateMixin
         if (_countdown > 0) {
           _countdown--;
         } else {
-          _timer?.cancel();
-          _gameStarted = false;
-          showExchangeDialog();
+          _endGame();
         }
       });
     });
   }
 
-  void showExchangeDialog() async {
-    // Tính toán số lượng voucher
-    int voucherQuantity = (_counter / 10).floor();
+  void _endGame() {
+    _timer?.cancel();
+    setState(() {
+      _gameStarted = false;
+    });
+    showExchangeDialog();
+  }
 
-    // Gọi API để cập nhật voucher
+  void showExchangeDialog() async {
+    // int voucherQuantity = (_counter / 10).floor();
+
+    // final prefs = await SharedPreferences.getInstance();
+    // final token = prefs.getString('accessToken');
+    // Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
+    // String userId = decodedToken['id'] as String;
+    // List<Map<String, dynamic>> voucherIds = await VoucherRequest.fetchVoucherForEvent(eventId);
+    // bool success = await VoucherRequest.updateVoucherAfterGame(userId, voucherIds[0]['id'], voucherQuantity, voucherIds[0]['point']);
+
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('accessToken');
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
     String userId = decodedToken['id'] as String;
-    List<String> voucherId = await VoucherRequest.fetchVoucherIdsForEvent(eventId); // Thay thế bằng voucherId thực tế
 
-    bool success = await VoucherRequest.updateVoucherAfterGame(userId, voucherId[0], voucherQuantity);
-
-    // Hiển thị kết quả
+    bool success = await PointRequest.updatePoint(userId, _counter);
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(success ? 'Chúc mừng!' : 'Thông báo'),
           content: Text(
             success
-                ? 'Bạn đã nhận được $voucherQuantity voucher!'
-                : 'Có lỗi xảy ra khi cập nhật voucher. Vui lòng thử lại sau.',
+                ? 'Bạn đã giành được thêm ${_counter} điểm!'
+                : 'Có lỗi xảy ra khi cập nhật điểm. Vui lòng thử lại sau.',
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                // Reset game state
-                setState(() {
-                  _counter = 0;
-                  _gameStarted = false;
-                  _countdown = 10; // Reset countdown nếu cần
-                });
+                Navigator.of(context).pop(); // Đóng dialog
+                Navigator.of(context).pushReplacementNamed('/home'); // Chuyển đến HomePage
               },
               child: Text('Đóng'),
             ),
