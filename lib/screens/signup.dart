@@ -10,6 +10,7 @@ import '../network/otp.dart';
 import 'widgets/input_field.dart';
 import '../utils/app_styles.dart';
 import 'signin.dart';
+import '../network/signup.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -41,6 +42,7 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
       final response = await OtpRequest.requestOtp(_phoneController.text);
       if (response.statusCode == 200) {
+        _isOtpVerified = true;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('OTP sent successfully')),
         );
@@ -96,18 +98,19 @@ class _SignUpPageState extends State<SignUpPage> {
 
       try {
         //final response = await _dio.post('http://desktop-a2g83h7:8080/auth/register', data: newUser.toJson());
-         final response = await _apiService.post('auth/register', newUser.toJson());
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Sign up successful')),
-          );
+        //final response = await _apiService.post('auth/register', newUser.toJson());
+        await signUpRequest.signUp(context, newUser.fullName, newUser.dateOfBirth, newUser.sex, newUser.facebook, newUser.role, newUser.avatar, newUser.otp.toString(), newUser.username, newUser.password, newUser.email, newUser.phone);
+        // if (response.statusCode == 200) {
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text('Sign up successful')),
+        //   );
         //Chuyển qua trang đăng nhập
-        Navigator.push(context, MaterialPageRoute(builder: (context) => signInPage()));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to sign up: ${response.data}')),
-          );
-        }
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => signInPage()));
+        // } else {
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text('Failed to sign up: ${response.data}')),
+        //   );
+        // }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to sign up: $e')),
@@ -126,7 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
       // Upload to Firebase Storage
       try {
-        final ref = FirebaseStorage.instance.ref().child('avatars').child('image.png');
+        final ref = FirebaseStorage.instance.ref().child('avatars').child(pickedFile.name);
         
         final uploadTask = ref.putFile(_avatarFile!);
         final snapshot = await uploadTask.whenComplete(() {});

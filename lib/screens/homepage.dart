@@ -34,24 +34,34 @@ class _HomePageState extends State<HomePage> {
   Future<Map<String, dynamic>?> _initializeData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('accessToken');
-    if (token == null) {
-      return null; // Return null instead of throwing an exception
+    developer.log('Token: $token');
+
+    if (token == null || token.isEmpty) {
+      developer.log('Token is null or empty');
+      return null;
     }
 
     try {
       Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-      String userId = decodedToken['id'];
-      
+      developer.log('Decoded token: $decodedToken');
+
+      String userId = decodedToken['id'] as String;
+      developer.log('User ID: $userId');
+
       final user = await UserApi.fetchUserData(userId);
+      developer.log('Fetched user data: $user');
+
       final events = await EventRequest.fetchEvents();
+      developer.log('Fetched events: $events');
 
       return {
         'user': user,
         'events': events,
       };
-    } catch (e) {
+    } catch (e, stackTrace) {
       developer.log('Error initializing data: $e');
-      rethrow;
+      developer.log('Stack trace: $stackTrace');
+      return null;
     }
   }
 

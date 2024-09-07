@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/app_styles.dart';
 import '../models/user.dart'; // Import the user model
 import 'homepage.dart';
+import 'my_voucher_page.dart';
 
 class MyDrawer extends StatelessWidget {
   final User user;
@@ -71,6 +72,11 @@ class MyDrawer extends StatelessWidget {
               title: Text('Vouchers', style: TextStyle(color: Colors.black)),
               onTap: () {
                 // Navigate to profile page
+                Navigator.pop(context); // Close the drawer
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyVoucherPage()),
+                );
               },
             ), 
             ListTile(

@@ -1,22 +1,44 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../network/voucher.dart';
 
 class ClickApp extends StatefulWidget {
+  final String eventId;
+  const ClickApp({Key? key, required this.eventId}) : super(key: key);
+
   @override
   _ClickAppState createState() => _ClickAppState();
 }
 
-class _ClickAppState extends State<ClickApp> {
+class _ClickAppState extends State<ClickApp> with SingleTickerProviderStateMixin {
+  String eventId = '';
   int _counter = 0;
   bool _gameStarted = false;
   int _countdown = 10;
   Timer? _timer;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    eventId = widget.eventId;
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 1.0, end: 0.9).animate(_animationController);
+  }
 
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
+    _animationController.forward().then((_) => _animationController.reverse());
   }
 
   void _startGame() {
@@ -39,26 +61,42 @@ class _ClickAppState extends State<ClickApp> {
     });
   }
 
-  void showExchangeDialog() {
+  void showExchangeDialog() async {
+    // Tính toán số lượng voucher
+    int voucherQuantity = (_counter / 10).floor();
+
+    // Gọi API để cập nhật voucher
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('accessToken');
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
+    String userId = decodedToken['id'] as String;
+    List<String> voucherId = await VoucherRequest.fetchVoucherIdsForEvent(eventId); // Thay thế bằng voucherId thực tế
+
+    bool success = await VoucherRequest.updateVoucherAfterGame(userId, voucherId[0], voucherQuantity);
+
+    // Hiển thị kết quả
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Đổi vật phẩm'),
-          content: Text('Bạn có muốn đổi $_counter lần nhấn lấy phần thưởng không?'),
+          title: Text(success ? 'Chúc mừng!' : 'Thông báo'),
+          content: Text(
+            success
+                ? 'Bạn đã nhận được $voucherQuantity voucher!'
+                : 'Có lỗi xảy ra khi cập nhật voucher. Vui lòng thử lại sau.',
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                // Reset game state
+                setState(() {
+                  _counter = 0;
+                  _gameStarted = false;
+                  _countdown = 10; // Reset countdown nếu cần
+                });
               },
-              child: Text('Hủy'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Logic đổi phần thưởng
-                Navigator.of(context).pop();
-              },
-              child: Text('Đổi'),
+              child: Text('Đóng'),
             ),
           ],
         );
@@ -69,37 +107,94 @@ class _ClickAppState extends State<ClickApp> {
   @override
   void dispose() {
     _timer?.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Click App Demo'),
-      ),
-      body: Center(
-        child: _gameStarted
-            ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                  Text('Time left: $_countdown seconds', style: Theme.of(context).textTheme.headlineMedium,),
-                  Text('You have pushed the button this many times:',),
-                  Text('$_counter', style: Theme.of(context).textTheme.headlineMedium,),
-              ],
-            )
-            : ElevatedButton(
-              onPressed: _startGame,
-              child: Text('Bắt đầu'),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.blue.shade300, Colors.purple.shade300],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: _gameStarted ? _buildGameUI() : _buildStartButton(),
+          ),
         ),
       ),
-      floatingActionButton: _gameStarted
-          ? FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      )
-          : null,
+    );
+  }
+
+  Widget _buildGameUI() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'Time left: $_countdown seconds',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        SizedBox(height: 20),
+        Text(
+          'Clicks:',
+          style: TextStyle(fontSize: 18, color: Colors.white70),
+        ),
+        Text(
+          '$_counter',
+          style: TextStyle(fontSize: 72, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        SizedBox(height: 40),
+        ScaleTransition(
+          scale: _animation,
+          child: GestureDetector(
+            onTap: _incrementCounter,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Icon(Icons.touch_app, size: 80, color: Colors.blue.shade300),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStartButton() {
+    return ElevatedButton(
+      onPressed: _startGame,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+        child: Text(
+          'Start Game',
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.blue.shade300,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        elevation: 5,
+      ),
     );
   }
 }

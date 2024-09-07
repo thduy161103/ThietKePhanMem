@@ -6,16 +6,86 @@ import '../models/voucher_detail.dart';
 import '../config/environment.dart';
 
 class VoucherRequest {
-  static final String baseUrl = '${Environment.baseUrl}/brand/api/voucher/';
+  static final String baseUrl = '${Environment.baseUrl}';
 
-  static Future<List<Voucher>> fetchVouchers() async {
-    print('Fetching vouchers from: ${baseUrl}list');
+  static Future<List<String>> fetchVoucherIdsForEvent(String eventId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('accessToken') ?? '';
 
       final response = await http.get(
-        Uri.parse('${baseUrl}list'),
+        Uri.parse('http://10.0.2.2:5000/brand/api/voucher/voucherofevent/$eventId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['success'] && jsonData['voucher'] is List) {
+          return (jsonData['voucher'] as List)
+              .map((v) => v['id_voucher'] as String)
+              .toList();
+        } else {
+          throw Exception('No vouchers found for this event');
+        }
+      } else {
+        throw Exception('Failed to load vouchers for event');
+      }
+    } catch (e) {
+      print('Error occurred while fetching vouchers for event: $e');
+      rethrow;
+    }
+  }
+
+  static Future<bool> updateVoucherAfterGame(String userId, String voucherId, int quantity) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('accessToken') ?? '';
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/users/voucher/$userId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'voucherId': voucherId,
+          'quantity': quantity,
+        }),
+      );
+
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final decodedData = jsonDecode(response.body);
+        if (decodedData['success'] == true) {
+          print('Voucher updated successfully');
+          return true;
+        } else {
+          print('Failed to update voucher: ${decodedData['message']}');
+          return false;
+        }
+      } else {
+        print('Failed to update voucher. Status code: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Error occurred while updating voucher: $e');
+      return false;
+    }
+  }
+
+  static Future<List<Voucher>> fetchVouchers(String userId) async {
+    print('Fetching vouchers from: ${baseUrl}list');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('accessToken') ?? '';
+      print('Token: $token');
+      print('User ID: $userId');
+      final response = await http.get(
+        Uri.parse('${baseUrl}/users/voucher/$userId'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -26,15 +96,21 @@ class VoucherRequest {
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedData = jsonDecode(response.body);
         
-        if (decodedData['success'] == true && decodedData['vouchers'] is List) {
-          List<dynamic> vouchersData = decodedData['vouchers'];
+        if (decodedData['username'] != null && decodedData['vouchers'] is Map) {
+          Map<String, dynamic> vouchersData = decodedData['vouchers'];
           print('Parsed vouchers data: $vouchersData');
           
-          List<Voucher> vouchers = vouchersData.map((json) => Voucher.fromJson(json)).toList();
+          List<Voucher> vouchers = vouchersData.entries.map((entry) {
+            return Voucher(
+              idVoucher: entry.key,
+              quantity: entry.value,
+            );
+          }).toList();
+          
           print('Converted to ${vouchers.length} Voucher objects');
           return vouchers;
         } else {
-          print('Unexpected data format or success is false');
+          print('Unexpected data format');
           throw Exception('Unexpected data format');
         }
       } else {
@@ -53,25 +129,25 @@ class VoucherRequest {
       final token = prefs.getString('accessToken') ?? '';
 
       final response = await http.get(
-        Uri.parse('${baseUrl}detail/$voucherId'),
+        Uri.parse('http://10.0.2.2:5000/brand/api/voucher/detailvoucher/$voucherId'),
         headers: {
           'Authorization': 'Bearer $token',
         },
       );
 
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        if (jsonData['success'] == true && jsonData['voucher'] != null) {
-          return VoucherDetail.fromJson(jsonData['voucher']);
-        } else {
-          throw Exception('Voucher detail not found or invalid data format');
-        }
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (jsonData['success'] && jsonData['vouchers'].isNotEmpty) {
+        return VoucherDetail.fromJson(jsonData['vouchers'][0]);
       } else {
-        throw Exception('Failed to load voucher details');
+        throw Exception('Voucher detail not found');
       }
-    } catch (e) {
-      print('Error occurred while fetching voucher detail: $e');
-      rethrow;
+    } else {
+      throw Exception('Failed to load voucher detail');
     }
+  } catch (e) {
+    print('Error occurred while fetching voucher detail: $e');
+    rethrow;
   }
+}
 }

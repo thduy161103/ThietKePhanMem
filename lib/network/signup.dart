@@ -1,15 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
 import '../screens/otppage.dart';
 import '../config/environment.dart';
+import '../screens/signin.dart';
+
 
 class signUpRequest {
   //thay đổi url thành api phù hợp
   static String urlFetch = '${Environment.baseUrl}/api/auth/register';
-  static String urlPost = '${Environment.baseUrl}/api/auth/register';
+  static String urlPost = '${Environment.baseUrl}/auth/register';
 
   static List<User> parseUser(String responseBody) {
     var list = json.decode(responseBody) as List<dynamic>;
@@ -26,7 +29,8 @@ class signUpRequest {
     }
   }
 
-  static Future<void> signUp(BuildContext context, String username, String password, String email, String phone) async {
+  static Future<void> signUp(BuildContext context, String fullName, String dateOfBirth, String sex, String facebook, String role, String avatar, String otp, String username, String password, String email, String phone) async {
+    print('signUpRequest: signUp called');
     final response = await http.post(
       Uri.parse(urlPost),
       headers: <String, String>{
@@ -37,14 +41,22 @@ class signUpRequest {
         'password': password,
         'email': email,
         'phone': phone,
+        'fullName': fullName,
+        'dateOfBirth': dateOfBirth,
+        'sex': sex,
+        'facebook': facebook,
+        'role': role,
+        'avatar': avatar,
+        'otp': otp,
       }),
     );
 
     if (response.statusCode == 200) {
+      print('signUpRequest: signUp successful');
       // If the server returns an OK response, navigate to the OTP page
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => OtpPage(username: username)),
+        MaterialPageRoute(builder: (context) => signInPage()),
       );
     } else {
       // If the server did not return an OK response, show an error message

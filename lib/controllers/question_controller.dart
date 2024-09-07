@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/environment.dart';
 import '../models/question.dart';
 import '../screens/result_screen.dart';
 
@@ -65,7 +66,7 @@ class QuestionController extends GetxController with SingleGetTickerProviderMixi
       }
 
       final response = await http.get(
-        Uri.parse('http://macbookair:8080/brand/api/event/fetchquestion/$eventId'),
+        Uri.parse('${Environment.baseUrl}/brand/api/event/fetchquestion/$eventId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',

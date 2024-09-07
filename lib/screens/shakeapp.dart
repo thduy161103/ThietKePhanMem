@@ -2,38 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:async';
 import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import '../network/voucher.dart';
 
 class ShakeApp extends StatefulWidget {
-  const ShakeApp({super.key});
+  final String eventId;
+
+  const ShakeApp({Key? key, required this.eventId}) : super(key: key);
 
   @override
   State<ShakeApp> createState() => _ShakeAppState();
 }
 
-class _ShakeAppState extends State<ShakeApp> {
+class _ShakeAppState extends State<ShakeApp> with SingleTickerProviderStateMixin {
   int shakeCount = 0;
   bool _gameStarted = false;
   int _countdown = 10;
-  List<Reward> rewards = [];
-  List<Item> inventory = [];
   Timer? _timer;
   double _lastX = 0, _lastY = 0, _lastZ = 0;
   final double shakeThreshold = 2.7;
+  late String eventId;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    // Khởi tạo dữ liệu ban đầu
-    rewards.add(Reward("Tai nghe Bluetooth", "Tai nghe Bluetooth chất lượng cao", 100));
-    inventory.add(Item("Tai nghe", "Tai nghe thông thường", 10));
-    // ... thêm các vật phẩm khác
+    eventId = widget.eventId;
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 1.0, end: 0.9).animate(_animationController);
   }
 
   void _startGame() {
     setState(() {
       _gameStarted = true;
       shakeCount = 0;
-      _countdown = 60;
+      _countdown = 10;
     });
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -56,6 +64,7 @@ class _ShakeAppState extends State<ShakeApp> {
         setState(() {
           shakeCount++;
         });
+        _animationController.forward().then((_) => _animationController.reverse());
       }
       _lastX = event.x;
       _lastY = event.y;
@@ -63,32 +72,42 @@ class _ShakeAppState extends State<ShakeApp> {
     });
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
+  void showExchangeDialog() async {
+    // Calculate voucher quantity
+    int voucherQuantity = (shakeCount / 10).floor();
 
-  void showExchangeDialog() {
+    // Call API to update voucher
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('accessToken');
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
+    String userId = decodedToken['id'] as String;
+    List<String> voucherIds = await VoucherRequest.fetchVoucherIdsForEvent(eventId);
+
+    bool success = await VoucherRequest.updateVoucherAfterGame(userId, voucherIds[0], voucherQuantity);
+
+    // Show result
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Đổi vật phẩm'),
-          content: Text('Bạn có muốn đổi $shakeCount lần lắc lấy phần thưởng không?'),
+          title: Text(success ? 'Chúc mừng!' : 'Thông báo'),
+          content: Text(
+            success
+                ? 'Bạn đã nhận được $voucherQuantity voucher!'
+                : 'Có lỗi xảy ra khi cập nhật voucher. Vui lòng thử lại sau.',
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                // Reset game state
+                setState(() {
+                  shakeCount = 0;
+                  _gameStarted = false;
+                  _countdown = 10;
+                });
               },
-              child: Text('Hủy'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Logic đổi phần thưởng
-                Navigator.of(context).pop();
-              },
-              child: Text('Đổi'),
+              child: Text('Đóng'),
             ),
           ],
         );
@@ -97,64 +116,99 @@ class _ShakeAppState extends State<ShakeApp> {
   }
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Lắc để đổi thưởng'),
-      ),
-      body: Center(
-        child: _gameStarted
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                    Text('Thời gian còn lại: $_countdown giây'),
-                    Text('Số lần lắc: $shakeCount'),
-                    Expanded(
-                        child: ListView.builder(
-                            itemCount: rewards.length + inventory.length,
-                            itemBuilder: (context, index) {
-                              if (index < rewards.length) {
-                                return ListTile(
-                                  title: Text(rewards[index].name),
-                                  subtitle: Text(rewards[index].description),
-                              );
-                              } else {
-                                return ListTile(
-                                  title: Text(inventory[index - rewards.length].name),
-                                  subtitle: Text(inventory[index - rewards.length].description),
-                                );
-                              }
-                            },
-                        ),
-                    ),
-                    // ElevatedButton(
-                    //     onPressed: showExchangeDialog,
-                    //     child: Text('Đổi vật phẩm'),
-                    // ),
-              ],
-            )
-            : ElevatedButton(
-                onPressed: _startGame,
-                child: Text('Bắt đầu'),
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.green.shade300, Colors.teal.shade300],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: _gameStarted ? _buildGameUI() : _buildStartButton(),
+          ),
+        ),
       ),
     );
   }
-}
 
-class Reward {
-  final String name;
-  final String description;
-  final int value;
+  Widget _buildGameUI() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'Time left: $_countdown seconds',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        SizedBox(height: 20),
+        Text(
+          'Shakes:',
+          style: TextStyle(fontSize: 18, color: Colors.white70),
+        ),
+        Text(
+          '$shakeCount',
+          style: TextStyle(fontSize: 72, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        SizedBox(height: 40),
+        ScaleTransition(
+          scale: _animation,
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Icon(Icons.vibration, size: 80, color: Colors.green.shade300),
+            ),
+          ),
+        ),
+        SizedBox(height: 20),
+        Text(
+          'Shake your device!',
+          style: TextStyle(fontSize: 18, color: Colors.white),
+        ),
+      ],
+    );
+  }
 
-  Reward(this.name, this.description, this.value);
-}
-
-class Item {
-  final String name;
-  final String description;
-  final int value;
-
-  Item(this.name, this.description, this.value);
+  Widget _buildStartButton() {
+    return ElevatedButton(
+      onPressed: _startGame,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+        child: Text(
+          'Start Shaking',
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.green.shade300,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        elevation: 5,
+      ),
+    );
+  }
 }
 

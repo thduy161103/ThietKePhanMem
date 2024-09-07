@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import '../models/event_detail.dart';
 import '../network/events.dart';
 import 'dart:developer' as developer;
+import 'clickapp.dart';
 import 'quiz/quiz_screen.dart'; // Make sure to import the QuizScreen
-import 'package:get/get.dart'; // Added import for GetX navigation
+import 'package:get/get.dart';
+
+import 'shakeapp.dart'; // Added import for GetX navigation
 
 class EventDetailsScreen extends StatefulWidget {
   final String eventId;
@@ -28,6 +31,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     print("Play button tapped for event: ${event.gameName}");
     if (event.gameName.toLowerCase() == "quiz") {
       Get.to(() => QuizScreen(eventId: widget.eventId));
+    } else if (event.gameName.toLowerCase() == "click") {
+      Get.to(() => ClickApp(eventId: widget.eventId));
+    } else if(event.gameName.toLowerCase() == "shake") {
+      Get.to(() => ShakeApp(eventId: widget.eventId));
     } else {
       print("Showing snackbar for unsupported game");
       Get.snackbar(

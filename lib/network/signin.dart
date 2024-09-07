@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
 import '../screens/otppage.dart';
+import '../config/environment.dart';
 
 class SignInRequest {
-  static const String url = 'http://macbookair:8080/auth/login';
+  static String url = '${Environment.baseUrl}/auth/login';
 
   static Future<User?> signIn(BuildContext context, String username, String password) async {
     final response = await http.post(

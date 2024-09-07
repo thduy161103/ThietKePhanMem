@@ -15,7 +15,7 @@ class OtpRequest {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'phoneNumber': phoneNumber,
+        'phone': phoneNumber,
       }),
     );
     return response;
