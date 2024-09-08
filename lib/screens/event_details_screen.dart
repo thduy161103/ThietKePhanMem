@@ -7,6 +7,8 @@ import 'quiz/quiz_screen.dart'; // Make sure to import the QuizScreen
 import 'package:get/get.dart';
 
 import 'shakeapp.dart'; // Added import for GetX navigation
+import 'in_app_browser_screen.dart'; // Add this import
+import '../network/user_api.dart'; // Import the user API to get the user ID
 
 class EventDetailsScreen extends StatefulWidget {
   final String eventId;
@@ -27,19 +29,32 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     _eventDetailFuture = EventRequest.fetchEventDetail(widget.eventId);
   }
 
-  void _onPlayButtonTapped(EventDetail event) {
-    print("Play button tapped for event: ${event.gameName}");
-    if (event.gameName.toLowerCase() == "quiz") {
-      Get.to(() => QuizScreen(eventId: widget.eventId));
-    } else if (event.gameName.toLowerCase() == "click") {
-      Get.to(() => ClickApp(eventId: widget.eventId));
-    } else if(event.gameName.toLowerCase() == "shake") {
-      Get.to(() => ShakeApp(eventId: widget.eventId));
-    } else {
-      print("Showing snackbar for unsupported game");
+  void _onPlayButtonTapped(EventDetail event) async {
+    developer.log("Play button tapped for event: ${event.gameName}");
+    try {
+      if (event.gameName.toLowerCase() == "quiz") {
+        Get.to(() => QuizScreen(eventId: widget.eventId));
+      } else if (event.gameName.toLowerCase() == "click") {
+        Get.to(() => ClickApp(eventId: widget.eventId));
+      } else if(event.gameName.toLowerCase() == "shake") {
+        Get.to(() => ShakeApp(eventId: widget.eventId));
+      } else if(event.gameName.toLowerCase() == "trivia") {
+        String userId = await UserApi.getCurrentUserId();
+        String triviaUrl = 'http://10.0.2.2:3000/player?userId=$userId';
+        Get.to(() => InAppBrowserScreen(url: triviaUrl));
+      } else {
+        developer.log("Unsupported game type");
+        Get.snackbar(
+          'Unsupported Game',
+          'This game type is not supported yet.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      developer.log('Error in _onPlayButtonTapped: $e');
       Get.snackbar(
-        'Unsupported Game',
-        'This game type is not supported yet.',
+        'Error',
+        'Unable to start the game. Please try again later.',
         snackPosition: SnackPosition.BOTTOM,
       );
     }

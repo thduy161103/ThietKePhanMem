@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'dart:developer' as developer;
 import '../models/user.dart';
 import '../config/environment.dart';
 
@@ -27,6 +29,28 @@ class UserApi {
     } else {
       print('response: $response');
       throw Exception('Failed to load user data');
+    }
+  }
+
+  static Future<String> getCurrentUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('accessToken');
+
+    if (token == null || token.isEmpty) {
+      throw Exception('No access token found');
+    }
+
+    try {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      developer.log('Decoded token: $decodedToken');
+
+      String userId = decodedToken['id'] as String;
+      developer.log('User ID: $userId');
+
+      return userId;
+    } catch (e) {
+      developer.log('Error decoding token: $e');
+      throw Exception('Failed to get user ID from token');
     }
   }
 }

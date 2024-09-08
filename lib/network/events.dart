@@ -49,7 +49,7 @@ class EventRequest {
   }
 
   static Future<EventDetail> fetchEventDetail(String eventId) async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:5000/brand/api/event/detailevent/$eventId'));
+    final response = await http.get(Uri.parse('http://10.0.2.2:5001/brand/api/event/detailevent/$eventId'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
