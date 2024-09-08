@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../utils/app_styles.dart';
+//import '../utils/app_styles.dart';
 import '../models/user.dart'; // Import the user model
 import 'all_vouchers_page.dart';
 import 'homepage.dart';
@@ -70,7 +70,7 @@ class MyDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.card_giftcard, color: Colors.black),
-              title: Text('Vouchers', style: TextStyle(color: Colors.black)),
+              title: Text('My Vouchers', style: TextStyle(color: Colors.black)),
               onTap: () {
                 // Navigate to profile page
                 Navigator.pop(context); // Close the drawer

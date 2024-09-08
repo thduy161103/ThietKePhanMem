@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import '../network/point.dart';
 import '../network/voucher.dart';
+import 'homepage.dart';
 
 class ShakeApp extends StatefulWidget {
   final String eventId;
@@ -112,7 +113,10 @@ class _ShakeAppState extends State<ShakeApp> with SingleTickerProviderStateMixin
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Đóng dialog
-                Navigator.of(context).pushReplacementNamed('/home'); // Chuyển đến HomePage
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                  (Route<dynamic> route) => false,
+                ); // Chuyển đến HomePage
               },
               child: Text('Đóng'),
             ),

@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomePage(),
-      debugShowCheckedModeBanner: false,  // Add this line to remove the debug banner
+      debugShowCheckedModeBanner: false, 
     );
   }
 }

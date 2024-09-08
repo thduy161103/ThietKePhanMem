@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -59,4 +56,14 @@ class DefaultFirebaseOptions {
     projectId: 'tkpm-a3f13',
     storageBucket: 'tkpm-a3f13.appspot.com',
   );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyC-ZcvmHSOa3VESikoR0lZjm15HPSNodKE',
+    appId: '1:930454745325:ios:03919d3ddc53234db09ce4',
+    messagingSenderId: '930454745325',
+    projectId: 'tkpm-a3f13',
+    storageBucket: 'tkpm-a3f13.appspot.com',
+    iosBundleId: 'com.example.musicapp',
+  );
+
 }

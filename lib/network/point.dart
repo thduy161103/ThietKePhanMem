@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import '../config/environment.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PointRequest {
   static final String baseUrl = '${Environment.baseUrl}';
@@ -16,16 +19,27 @@ class PointRequest {
   }
 
   static Future<bool> updatePoint(String userId, int point) async {
-    final response = await http.put(
-      Uri.parse('${baseUrl}/user/point/$userId'),
-      body: {'point': point},
-    );
-    if (response.statusCode == 200) {
-      return true;
-    } else {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('accessToken') ?? '';
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/users/add-point'),
+        body: jsonEncode(<String, String>{
+          "id": userId,
+          "point": point.toString()
+
+        }),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.statusCode);
+      return response.statusCode == 200;
+    } catch (e) {
+      print("Error updating point: $e");
       return false;
     }
   }
-
-
 }

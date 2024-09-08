@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../network/voucher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import '../utils/app_styles.dart';
+import 'drawer.dart'; // Add this import
+import '../models/user.dart';
+import '../network/user_api.dart';
 
 class AllVouchersPage extends StatefulWidget {
 
@@ -13,11 +17,24 @@ class AllVouchersPage extends StatefulWidget {
 
 class _AllVouchersPageState extends State<AllVouchersPage> {
   late Future<List<Map<String, dynamic>>> _vouchersFuture;
+  User? currentUser; // Add this line
 
   @override
   void initState() {
     super.initState();
     _vouchersFuture = VoucherRequest.fetchAllVoucher();
+    _fetchCurrentUser(); // Add this line
+  }
+
+  Future<void> _fetchCurrentUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('accessToken');
+    if (token != null) {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      String userId = decodedToken['id'] as String;
+      currentUser = await UserApi.fetchUserData(userId);
+      setState(() {});
+    }
   }
 
   Future<void> _redeemVoucher(String voucherId, int points) async {
@@ -46,36 +63,70 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('All Vouchers'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _vouchersFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No vouchers available'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final voucher = snapshot.data![index];
-                return VoucherCard(
-                  voucherId: voucher['id'],
-                  points: voucher['point'],
-                  onRedeem: _redeemVoucher,
-                );
+      drawer: currentUser != null ? MyDrawer(user: currentUser!) : null,
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              backgroundColor: Colors.orange,
+              leading: Builder(
+                builder: (BuildContext context) => IconButton(
+                  icon: Icon(Icons.menu, color: Colors.white),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                ),
+              ),
+              title: Text('All Vouchers'),
+              floating: true,
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'Available Vouchers',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: _vouchersFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                } else if (snapshot.hasError) {
+                  return SliverFillRemaining(
+                    child: Center(child: Text('Error: ${snapshot.error}')),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return SliverFillRemaining(
+                    child: Center(child: Text('No vouchers available')),
+                  );
+                } else {
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        final voucher = snapshot.data![index];
+                        return VoucherCard(
+                          voucherId: voucher['id_voucher'],
+                          points: voucher['point'],
+                          onRedeem: _redeemVoucher,
+                        );
+                      },
+                      childCount: snapshot.data!.length,
+                    ),
+                  );
+                }
               },
-            );
-          }
-        },
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  void _openDrawer(BuildContext context) {
+    Scaffold.of(context).openDrawer();
   }
 }
 

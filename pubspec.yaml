@@ -52,7 +52,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   confetti: ^0.7.0
   flutter_dotenv: any
-  webview_flutter: ^4.9.0
+  webview_flutter: any
 
 dev_dependencies:
   flutter_test:

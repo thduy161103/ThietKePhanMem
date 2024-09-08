@@ -40,8 +40,8 @@ class _ResultScreenState extends State<ResultScreen> {
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
     String userId = decodedToken['id'] as String;
 
-    // Tính điểm dựa trên số câu trả lời đúng
-    _earnedPoints = _qnController.numOfCorrectAns * 10; // Giả sử mỗi câu đúng được 10 điểm
+    // Calculate points based on correct answers
+    _earnedPoints = _qnController.numOfCorrectAns * 10; // Assuming 10 points per correct answer
 
     try {
       bool success = await PointRequest.updatePoint(userId, _earnedPoints);

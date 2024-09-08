@@ -4,6 +4,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:musicapp/network/point.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../network/voucher.dart';
+import 'homepage.dart';
 
 class ClickApp extends StatefulWidget {
   final String eventId;
@@ -98,7 +99,10 @@ class _ClickAppState extends State<ClickApp> with SingleTickerProviderStateMixin
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Đóng dialog
-                Navigator.of(context).pushReplacementNamed('/home'); // Chuyển đến HomePage
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                  (Route<dynamic> route) => false,
+                );
               },
               child: Text('Đóng'),
             ),
