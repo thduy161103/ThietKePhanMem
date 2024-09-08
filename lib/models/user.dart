@@ -10,6 +10,7 @@ class User {
   final String facebook;
   final String role;
   final String? otp;
+  final int? point;
 
   User({
     required this.fullName,
@@ -23,6 +24,7 @@ class User {
     required this.facebook,
     required this.role,
     this.otp,
+    this.point,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -38,6 +40,7 @@ class User {
       facebook: json['facebook'],
       role: json['role'],
       otp: json['otp'],
+      point: json['point'],
     );
   }
 

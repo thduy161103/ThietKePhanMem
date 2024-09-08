@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import '../utils/app_styles.dart';
-import '../models/user.dart'; // Import the user model
+import '../models/user.dart';
+import '../network/point.dart'; // Add this import
 import 'all_vouchers_page.dart';
 import 'homepage.dart';
 import 'my_voucher_page.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_provider.dart';
 
 class MyDrawer extends StatelessWidget {
-  final User user;
-
-  MyDrawer({required this.user});
-
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
+    final userPoints = userProvider.userPoints;
+
     return Drawer(
       child: Container(
         color: Colors.white,
@@ -24,22 +26,47 @@ class MyDrawer extends StatelessWidget {
               child: DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  // Removed the borderRadius
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Color(0xFFff5c30),
-                      child: Text(
-                        user.username.isNotEmpty ? user.username[0].toUpperCase() : '',
-                        style: TextStyle(fontSize: 40.0, color: Colors.white),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Color(0xFFff5c30),
+                          child: Text(
+                            user?.username.isNotEmpty == true ? user!.username[0].toUpperCase() : '',
+                            style: TextStyle(fontSize: 40.0, color: Colors.white),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade100,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.star, color: Colors.orange, size: 20),
+                              SizedBox(width: 4),
+                              Text(
+                                '$userPoints',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 10),
                     Text(
-                      user.username,
+                      user?.username ?? '',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
@@ -47,7 +74,7 @@ class MyDrawer extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      user.email,
+                      user?.email ?? '',
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 14,

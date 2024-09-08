@@ -20,10 +20,20 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 //import 'firebase_options.dart';
 //import 'screens/signup.dart';
 
+import 'package:provider/provider.dart';
+import 'providers/user_provider.dart';
+
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -71,6 +71,11 @@ class VoucherRequest {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('accessToken') ?? '';
 
+      print('userId: $userId');
+      print('voucherId: $voucherId');
+      print('quantity: $quantity');
+      print('point: $point');
+      print('$baseUrl/users/voucher/$userId');
       final response = await http.post(
         Uri.parse('$baseUrl/users/voucher/$userId'),
         headers: {
@@ -78,9 +83,9 @@ class VoucherRequest {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'voucherId': voucherId,
+          'voucher': voucherId,
           'quantity': quantity,
-          'point': point,
+          'point': point
         }),
       );
 
@@ -88,14 +93,8 @@ class VoucherRequest {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        final decodedData = jsonDecode(response.body);
-        if (decodedData['success'] == true) {
-          print('Voucher updated successfully');
+         print('Voucher updated successfully');
           return true;
-        } else {
-          print('Failed to update voucher: ${decodedData['message']}');
-          return false;
-        }
       } else {
         print('Failed to update voucher. Status code: ${response.statusCode}');
         return false;

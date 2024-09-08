@@ -53,6 +53,7 @@ dependencies:
   confetti: ^0.7.0
   flutter_dotenv: any
   webview_flutter: any
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

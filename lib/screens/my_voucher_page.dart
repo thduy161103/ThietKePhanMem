@@ -124,7 +124,7 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: currentUser != null ? MyDrawer(user: currentUser!) : null,
+      drawer: currentUser != null ? MyDrawer() : null,
       body: Container(
         decoration: AppStyles.getGradientDecoration(),
         child: SafeArea(

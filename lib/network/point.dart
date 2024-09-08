@@ -11,6 +11,8 @@ class PointRequest {
     final response = await http.get(
       Uri.parse('${baseUrl}/user/point/$userId'),
     );
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 200) {
       return int.parse(response.body);
     } else {
