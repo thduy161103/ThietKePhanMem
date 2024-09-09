@@ -66,7 +66,7 @@ class VoucherRequest {
     }
   }
 
-  static Future<bool> updateVoucherAfterGame(String userId, String voucherId, int quantity, int point) async {
+  static Future<bool> updateVoucherAfterGame(String userId, String voucherId, int quantity, int point, String phoneNumber) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('accessToken') ?? '';
@@ -85,7 +85,8 @@ class VoucherRequest {
         body: jsonEncode({
           'voucher': voucherId,
           'quantity': quantity,
-          'point': point
+          'point': point,
+          'targetPhone': phoneNumber
         }),
       );
 
@@ -178,4 +179,32 @@ class VoucherRequest {
     rethrow;
   }
 }
+
+  static Future<bool> sendVoucherGift(String userId, String idVoucher, String friendPhone, int quantity) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('accessToken') ?? '';
+      final response = await http.post(
+        Uri.parse('${baseUrl}/users/send-voucher/$userId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'voucher': idVoucher,
+          'targetPhone': friendPhone,
+          'quantity': quantity
+        }),
+      );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    print('Error occurred while fetching voucher detail: $e');
+    rethrow;
+  }
+  }
 }

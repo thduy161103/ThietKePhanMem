@@ -1,13 +1,13 @@
-import 'dart:math';
+//import 'dart:math';
 
 import 'package:flutter/material.dart';
 import '../network/voucher.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:jwt_decoder/jwt_decoder.dart';
 import 'drawer.dart'; // Add this import
-import '../models/user.dart';
-import '../network/user_api.dart';
-import '../network/point.dart'; // Add this import
+//import '../models/user.dart';
+//import '../network/user_api.dart';
+//import '../network/point.dart'; // Add this import
 import 'package:provider/provider.dart';
 import '../providers/user_provider.dart';
 
@@ -27,17 +27,124 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
     super.initState();
     _vouchersFuture = VoucherRequest.fetchAllVoucher();
   }
-  void redeemVoucher(BuildContext context,String userId, String voucherId, int quantity, int point) async {
-    print('userId: $userId');
-    print('voucherId: $voucherId');
-    print('quantity: $quantity');
-    print('point: $point');
-    // TODO: Implement voucher redemption logic base on voucherId and points
-    final result = await VoucherRequest.updateVoucherAfterGame( userId,  voucherId,  quantity,  point);
+  void redeemVoucher(BuildContext context, String userId, String voucherId, int quantity, int point) async {
+    String? phoneNumber;
+    bool? forSelf = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        bool _forSelf = true;
+        return AlertDialog(
+          title: Text('Mua Voucher', style: TextStyle(color: Colors.orange[800])),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Container(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Who is this voucher for?', style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 16),
+                    InkWell(
+                      onTap: () {
+                        final userProvider = Provider.of<UserProvider>(context, listen: false);
+                        phoneNumber = userProvider.user!.phone;
+                        setState(() => _forSelf = true);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: _forSelf ? Colors.orange[50] : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: _forSelf ? Colors.orange : Colors.grey[300]!),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.person, color: _forSelf ? Colors.orange : Colors.grey),
+                            SizedBox(width: 12),
+                            Text('For myself', style: TextStyle(fontWeight: _forSelf ? FontWeight.bold : FontWeight.normal)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    InkWell(
+                      onTap: () => setState(() => _forSelf = false),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: !_forSelf ? Colors.orange[50] : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: !_forSelf ? Colors.orange : Colors.grey[300]!),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.people, color: !_forSelf ? Colors.orange : Colors.grey),
+                            SizedBox(width: 12),
+                            Text('For a friend', style: TextStyle(fontWeight: !_forSelf ? FontWeight.bold : FontWeight.normal)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (!_forSelf) ...[
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Friend\'s Phone Number',
+                          prefixIcon: Icon(Icons.phone, color: Colors.orange),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.orange),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.orange, width: 2),
+                          ),
+                        ),
+                        onChanged: (value) => phoneNumber = value,
+                      ),
+                    ],
+                  ],
+                ),
+              );
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel', style: TextStyle(color: Colors.grey[600])),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: Text('Confirm'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              onPressed: () => Navigator.of(context).pop(_forSelf),
+            ),
+          ],
+        );
+      },
+    );
 
-    print('result: $result');
+    if (forSelf == null) return; // User cancelled the dialog
+
+    if (!forSelf && (phoneNumber == null || phoneNumber!.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter a phone number for your friend')));
+      return;
+    }
+
+    // Call VoucherRequest.updateVoucherAfterGame
+    final result = await VoucherRequest.updateVoucherAfterGame(
+      userId,
+      voucherId,
+      quantity,
+      point,
+      phoneNumber!,
+    );
+
     if (result) {
-      // cập nhật lại số dư point của user
+      // Update user's points
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       userProvider.setUserPoints(userProvider.userPoints - point);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Voucher redeemed successfully')));
@@ -150,7 +257,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
                 final userProvider = Provider.of<UserProvider>(context, listen: false);
                 redeemVoucher(context, userProvider.userId!, voucher['id_voucher'], 1, voucher['point']);
               },
-              child: Text('Redeem Voucher'),
+              child: Text('Mua Voucher'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
                 shape: RoundedRectangleBorder(
@@ -175,16 +282,125 @@ class VoucherCard extends StatelessWidget {
   final int points;
   final Function(String, int) onRedeem;
  void redeemVoucher(BuildContext context,String userId, String voucherId, int quantity, int point) async {
-    print('userId: $userId');
-    print('voucherId: $voucherId');
-    print('quantity: $quantity');
-    print('point: $point');
-    // TODO: Implement voucher redemption logic base on voucherId and points
-    final result = await VoucherRequest.updateVoucherAfterGame( userId,  voucherId,  quantity,  point);
+    String? phoneNumber;
+    bool? forSelf = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        bool _forSelf = true;
+        return AlertDialog(
+          title: Text('Mua Voucher', style: TextStyle(color: Colors.orange[800])),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Container(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Who is this voucher for?', style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 16),
+                    InkWell(
+                      onTap: () {
+                        final userProvider = Provider.of<UserProvider>(context, listen: false);
+                        phoneNumber = userProvider.user!.phone;
+                        setState(() => _forSelf = true);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: _forSelf ? Colors.orange[50] : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: _forSelf ? Colors.orange : Colors.grey[300]!),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.person, color: _forSelf ? Colors.orange : Colors.grey),
+                            SizedBox(width: 12),
+                            Text('For myself', style: TextStyle(fontWeight: _forSelf ? FontWeight.bold : FontWeight.normal)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    InkWell(
+                      onTap: () => setState(() => _forSelf = false),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: !_forSelf ? Colors.orange[50] : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: !_forSelf ? Colors.orange : Colors.grey[300]!),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.people, color: !_forSelf ? Colors.orange : Colors.grey),
+                            SizedBox(width: 12),
+                            Text('For a friend', style: TextStyle(fontWeight: !_forSelf ? FontWeight.bold : FontWeight.normal)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (!_forSelf) ...[
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Friend\'s Phone Number',
+                          prefixIcon: Icon(Icons.phone, color: Colors.orange),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.orange),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.orange, width: 2),
+                          ),
+                        ),
+                        onChanged: (value) => phoneNumber = value,
+                      ),
+                    ],
+                  ],
+                ),
+              );
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel', style: TextStyle(color: Colors.grey[600])),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: Text('Confirm'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              onPressed: () => Navigator.of(context).pop(_forSelf),
+            ),
+          ],
+        );
+      },
+    );
 
-    print('result: $result');
+    if (forSelf == null) return; // User cancelled the dialog
+
+    if (!forSelf && (phoneNumber == null || phoneNumber!.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter a phone number for your friend')));
+      return;
+    }
+
+    // Call VoucherRequest.updateVoucherAfterGame
+    final result = await VoucherRequest.updateVoucherAfterGame(
+      userId,
+      voucherId,
+      quantity,
+      point,
+      phoneNumber!,
+    );
+
     if (result) {
-
+      // Update user's points
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.setUserPoints(userProvider.userPoints - point);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Voucher redeemed successfully')));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to redeem voucher')));

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import '../models/user.dart';
@@ -6,6 +7,7 @@ import '../models/voucher.dart';
 //import '../models/voucher_detail.dart';
 import '../network/user_api.dart';
 import '../network/voucher.dart';
+import '../providers/user_provider.dart';
 import '../utils/app_styles.dart';
 import 'dart:developer' as developer;
 import 'drawer.dart'; // Add this import
@@ -79,46 +81,131 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(voucher.ten ?? ''),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 if (voucher.hinhanh != null)
-                  Image.network(
-                    voucher.hinhanh!,
-                    height: 150,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        height: 150,
-                        width: double.infinity,
-                        color: Colors.grey[300],
-                        child: Icon(Icons.error),
-                      );
-                    },
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      voucher.hinhanh!,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 200,
+                          width: double.infinity,
+                          color: Colors.grey[300],
+                          child: Icon(Icons.error, size: 50, color: Colors.grey[600]),
+                        );
+                      },
+                    ),
                   ),
-                SizedBox(height: 10),
-                Text('Mã QR: ${voucher.detail?.qrcode ?? 'N/A'}'),
-                Text('Trị giá: ${voucher.trigia ?? 'N/A'}'),
-                Text('Mô tả: ${voucher.detail?.mota ?? 'N/A'}'),
-                Text('Ngày hết hạn: ${voucher.detail!.ngayhethan.toString()}'),
-                Text('Trạng thái: ${voucher.detail!.trangthai}'),
+                SizedBox(height: 20),
+                Text(
+                  voucher.ten ?? 'Voucher',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 15),
+                _buildDetailRow(Icons.qr_code, 'Mã QR', voucher.detail?.qrcode ?? 'N/A'),
+                _buildDetailRow(Icons.monetization_on, 'Trị giá', voucher.trigia ?? 'N/A'),
+                _buildDetailRow(Icons.description, 'Mô tả', voucher.detail?.mota ?? 'N/A'),
+                _buildDetailRow(Icons.calendar_today, 'Ngày hết hạn', _formatDate(voucher.detail?.ngayhethan ?? DateTime.now())),
+                _buildDetailRow(Icons.info_outline, 'Trạng thái', voucher.detail?.trangthai.toString() ?? 'N/A'),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                    child: Text('Đóng'),
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Đóng'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
         );
       },
     );
+  }
+
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: Colors.blue),
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600], fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Add this helper method if it doesn't exist
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
+  void _sendVoucherGift(Voucher voucher, String friendPhone, int quantity) async {
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final userId = userProvider.userId!;
+      final result = await VoucherRequest.sendVoucherGift(
+        userId,
+        voucher.idVoucher,
+        friendPhone,
+        quantity
+      );
+      if (result) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đã gửi tặng voucher thành công')),
+        );
+        // Refresh the voucher list
+        setState(() {
+          _vouchersFuture = _fetchVouchers();
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gửi tặng voucher thất bại')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Có lỗi xảy ra: $e')),
+      );
+    }
   }
 
   @override
@@ -184,69 +271,80 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              child: InkWell(
-                                onTap: () => _showVoucherDetails(voucher),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-                                      child: Image.network(
-                                        voucher.hinhanh ?? '',
-                                        height: 150,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Container(
-                                            height: 150,
-                                            color: Colors.grey[300],
-                                            child: Icon(Icons.error),
-                                          );
-                                        },
-                                      ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                                    child: Image.network(
+                                      voucher.hinhanh ?? '',
+                                      height: 150,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          height: 150,
+                                          color: Colors.grey[300],
+                                          child: Icon(Icons.error),
+                                        );
+                                      },
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            voucher.ten ?? '',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          voucher.ten ?? '',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          'Trị giá: ${voucher.trigia ?? 'N/A'}',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          'Số lượng: ${voucher.quantity}',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        if (voucher.detail != null) ...[
                                           SizedBox(height: 8),
                                           Text(
-                                            'Trị giá: ${voucher.trigia ?? 'N/A'}',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.green,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            'Số lượng: ${voucher.quantity}',
+                                            'Hạn sử dụng: ${_formatDate(voucher.detail!.ngayhethan)}',
                                             style: TextStyle(fontSize: 14),
                                           ),
-                                          if (voucher.detail != null) ...[
-                                            SizedBox(height: 8),
-                                            Text(
-                                              'Hạn sử dụng: ${_formatDate(voucher.detail!.ngayhethan)}',
-                                              style: TextStyle(fontSize: 14),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            'Thương hiệu: ${voucher.detail!.brandName}',
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                        ],
+                                        SizedBox(height: 16),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () => _showVoucherDetails(voucher),
+                                              child: Text('Xem chi tiết'),
                                             ),
-                                            SizedBox(height: 8),
-                                            Text(
-                                              'Thương hiệu: ${voucher.detail!.brandName}',
-                                              style: TextStyle(fontSize: 14),
+                                            ElevatedButton(
+                                              onPressed: () => _showGiftDialog(voucher),
+                                              child: Text('Tặng voucher'),
                                             ),
                                           ],
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           );
@@ -263,8 +361,93 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
     );
   }
 
-  // Add this helper method to format the date
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
+  void _showGiftDialog(Voucher voucher) {
+    String friendPhone = '';
+    int quantity = 1;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Tặng voucher cho bạn',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Số điện thoại bạn',
+                    prefixIcon: Icon(Icons.phone),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onChanged: (value) => friendPhone = value,
+                ),
+                SizedBox(height: 15),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Số lượng',
+                    prefixIcon: Icon(Icons.confirmation_number),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) => quantity = int.tryParse(value) ?? 1,
+                ),
+                SizedBox(height: 25),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text('Hủy'),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.grey[600],
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (friendPhone.isNotEmpty && quantity > 0) {
+                          Navigator.of(context).pop();
+                          _sendVoucherGift(voucher, friendPhone, quantity);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Vui lòng nhập số điện thoại và số lượng hợp lệ')),
+                          );
+                        }
+                      },
+                      child: Text('Tặng'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
