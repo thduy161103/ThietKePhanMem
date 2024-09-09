@@ -28,6 +28,8 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
     _vouchersFuture = VoucherRequest.fetchAllVoucher();
   }
   void redeemVoucher(BuildContext context, String userId, String voucherId, int quantity, int point) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    String myPhoneNumber = userProvider.user!.phone;
     String? phoneNumber;
     bool? forSelf = await showDialog<bool>(
       context: context,
@@ -47,9 +49,11 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
                     SizedBox(height: 16),
                     InkWell(
                       onTap: () {
-                        final userProvider = Provider.of<UserProvider>(context, listen: false);
-                        phoneNumber = userProvider.user!.phone;
-                        setState(() => _forSelf = true);
+                        setState(() {
+                          print(userProvider.user?.phone);
+                          phoneNumber = myPhoneNumber;
+                          _forSelf = true;
+                        });
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -132,6 +136,10 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
     if (!forSelf && (phoneNumber == null || phoneNumber!.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter a phone number for your friend')));
       return;
+    }
+
+    if(forSelf && phoneNumber == null){
+      phoneNumber = myPhoneNumber;
     }
 
     // Call VoucherRequest.updateVoucherAfterGame
