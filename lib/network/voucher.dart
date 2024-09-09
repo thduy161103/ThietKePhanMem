@@ -52,7 +52,7 @@ class VoucherRequest {
         if (jsonData['success'] && jsonData['voucher'] is List) {
           return (jsonData['voucher'] as List).map((voucher) => {
             'id': voucher['id_voucher'] as String,
-            'point': voucher['point'] as int,
+            'diem': voucher['diem'] as int,
           }).toList();
         } else {
           throw Exception('No vouchers found for this event');
@@ -66,7 +66,7 @@ class VoucherRequest {
     }
   }
 
-  static Future<bool> updateVoucherAfterGame(String userId, String voucherId, int quantity, int point, String phoneNumber) async {
+  static Future<bool> updateVoucherAfterGame(String userId, String voucherId, int quantity, int diem, String phoneNumber) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('accessToken') ?? '';
@@ -74,7 +74,7 @@ class VoucherRequest {
       print('userId: $userId');
       print('voucherId: $voucherId');
       print('quantity: $quantity');
-      print('point: $point');
+      print('diem: $diem');
       print('$baseUrl/users/voucher/$userId');
       final response = await http.post(
         Uri.parse('$baseUrl/users/voucher/$userId'),
@@ -85,7 +85,7 @@ class VoucherRequest {
         body: jsonEncode({
           'voucher': voucherId,
           'quantity': quantity,
-          'point': point,
+          'diem': diem,
           'targetPhone': phoneNumber
         }),
       );

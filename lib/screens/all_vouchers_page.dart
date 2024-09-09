@@ -249,7 +249,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '${voucher['point']} points',
+                  '${voucher['diem']} diem',
                   style: TextStyle(fontSize: 16, color: Colors.orange),
                 ),
               ],
@@ -263,7 +263,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
             ElevatedButton(
               onPressed: () {
                 final userProvider = Provider.of<UserProvider>(context, listen: false);
-                redeemVoucher(context, userProvider.userId!, voucher['id_voucher'], 1, voucher['point']);
+                redeemVoucher(context, userProvider.userId!, voucher['id_voucher'], 1, voucher['diem']);
               },
               child: Text('Mua Voucher'),
               style: ElevatedButton.styleFrom(
@@ -287,7 +287,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
 
 class VoucherCard extends StatelessWidget {
   final String voucherId;
-  final int points;
+  final int diem;
   final Function(String, int) onRedeem;
  void redeemVoucher(BuildContext context,String userId, String voucherId, int quantity, int point) async {
     String? phoneNumber;
@@ -417,7 +417,7 @@ class VoucherCard extends StatelessWidget {
   const VoucherCard({
     Key? key,
     required this.voucherId,
-    required this.points,
+    required this.diem,
     required this.onRedeem,
   }) : super(key: key);
 
@@ -442,7 +442,7 @@ class VoucherCard extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              'Points: $points',
+              'Points: $diem',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
