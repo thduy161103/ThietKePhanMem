@@ -296,7 +296,7 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          voucher.ten ?? '',
+                                          voucher.detail?.ten ?? '',
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
@@ -304,7 +304,7 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
                                         ),
                                         SizedBox(height: 8),
                                         Text(
-                                          'Trị giá: ${voucher.trigia ?? 'N/A'}',
+                                          'Trị giá: ${voucher.detail?.trigia ?? 'N/A'}',
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.green,
