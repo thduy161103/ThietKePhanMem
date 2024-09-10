@@ -245,9 +245,10 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Voucher ${voucher['id_voucher']}',
+                  'Voucher ID: ${voucher['id_voucher']}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
+                
                 Text(
                   '${voucher['diem']} diem',
                   style: TextStyle(fontSize: 16, color: Colors.orange),
@@ -256,10 +257,20 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
             ),
             SizedBox(height: 8),
             Text(
-              voucher['description'] ?? 'No description available',
-              style: TextStyle(fontSize: 14),
-            ),
+                  'Voucher Name: ${voucher['ten']}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+            SizedBox(height: 8),
+            Text(
+                  'Expired Day: ${voucher['ngayhethan']}',
+                  style: TextStyle(fontSize: 15),
+                ),
             SizedBox(height: 16),
+            Text(
+              voucher['mota'] ?? 'No description available',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
             ElevatedButton(
               onPressed: () {
                 final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -287,6 +298,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
 
 class VoucherCard extends StatelessWidget {
   final String voucherId;
+  final String voucherName;
   final int diem;
   final Function(String, int) onRedeem;
  void redeemVoucher(BuildContext context,String userId, String voucherId, int quantity, int point) async {
@@ -417,6 +429,7 @@ class VoucherCard extends StatelessWidget {
   const VoucherCard({
     Key? key,
     required this.voucherId,
+    required this.voucherName,
     required this.diem,
     required this.onRedeem,
   }) : super(key: key);
@@ -438,6 +451,11 @@ class VoucherCard extends StatelessWidget {
           children: [
             Text(
               'Voucher ID: $voucherId',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Voucher Name: $voucherName',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
