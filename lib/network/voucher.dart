@@ -8,6 +8,35 @@ import '../config/environment.dart';
 class VoucherRequest {
   static final String baseUrl = '${Environment.baseUrl}';
 
+  static Future<bool> checkVoucher(String userId, String voucherId, String eventId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('accessToken') ?? '';
+
+      final response = await http.post(
+        Uri.parse('${baseUrl}/brand/api/voucher/updatevoucheramount'),
+        headers: { 
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'id_sukien': eventId,
+          'id_voucher': voucherId,
+          'soluong': 1
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error occurred while checking voucher: $e');
+      rethrow;
+    }
+  }
+
   static Future<List<Map<String, dynamic>>> fetchAllVoucher() async { 
     try {
       final prefs = await SharedPreferences.getInstance();

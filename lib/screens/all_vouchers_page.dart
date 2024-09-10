@@ -142,23 +142,26 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
       phoneNumber = myPhoneNumber;
     }
 
-    // Call VoucherRequest.updateVoucherAfterGame
-    final result = await VoucherRequest.updateVoucherAfterGame(
-      userId,
-      eventId,
-      voucherId,
-      quantity,
-      point,
-      phoneNumber!,
-    );
+    final check = await VoucherRequest.checkVoucher(userId, voucherId, eventId);
+    if(check){
+      // Call VoucherRequest.updateVoucherAfterGame
+      final result = await VoucherRequest.updateVoucherAfterGame(
+        userId,
+        eventId,
+        voucherId,
+        quantity,
+        point,
+        phoneNumber!,
+      );
 
-    if (result) {
-      // Update user's points
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
-      userProvider.setUserPoints(userProvider.userPoints - point);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Voucher redeemed successfully')));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to redeem voucher')));
+      if (result) {
+        // Update user's points
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.setUserPoints(userProvider.userPoints - point);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Voucher redeemed successfully')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to redeem voucher')));
+      }
     }
   }
 
@@ -419,23 +422,26 @@ class VoucherCard extends StatelessWidget {
       return;
     }
 
+    final check = await VoucherRequest.checkVoucher(userId, voucherId, eventId);
+    if(check){
     // Call VoucherRequest.updateVoucherAfterGame
-    final result = await VoucherRequest.updateVoucherAfterGame(
-      userId,
-      eventId,
-      voucherId,
-      quantity,
-      point,
-      phoneNumber!,
-    );
+      final result = await VoucherRequest.updateVoucherAfterGame(
+        userId,
+        eventId,
+        voucherId,
+        quantity,
+        point,
+        phoneNumber!,
+      );
 
-    if (result) {
-      // Update user's points
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
-      userProvider.setUserPoints(userProvider.userPoints - point);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Voucher redeemed successfully')));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to redeem voucher')));
+      if (result) {
+        // Update user's points
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.setUserPoints(userProvider.userPoints - point);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Voucher redeemed successfully')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to redeem voucher')));
+      }
     }
   }
   const VoucherCard({
