@@ -115,7 +115,7 @@ class VoucherRequest {
           'voucher': voucherId,
           'event': eventId,
           'quantity': quantity,
-          'diem': diem,
+          'point': diem,
           'targetPhone': phoneNumber
         }),
       );
