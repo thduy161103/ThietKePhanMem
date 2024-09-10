@@ -53,4 +53,9 @@ class UserApi {
       throw Exception('Failed to get user ID from token');
     }
   }
+
+  static Future<String> getAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken') ?? '';
+  }
 }

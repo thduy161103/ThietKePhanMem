@@ -230,7 +230,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
             break;
           case "trivia game":
             String userId = await UserApi.getCurrentUserId();
-            String triviaUrl = 'http://10.0.2.2:6969/player?userId=$userId';
+            String accessToken = await UserApi.getAccessToken();
+            String triviaUrl = 'http://10.0.2.2:6969/player?userId=$userId&eventId=${widget.eventId}&gameId=${gameDetail.id}&token=$accessToken';
             Get.to(() => InAppBrowserScreen(url: triviaUrl));
             break;
           default:

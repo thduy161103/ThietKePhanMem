@@ -33,7 +33,6 @@ class PointRequest {
           "eventId": eventId,
           "scores": scores,
           "point": point
-
         }),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
