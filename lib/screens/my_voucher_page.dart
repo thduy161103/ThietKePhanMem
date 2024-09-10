@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../models/user.dart';
 import '../models/voucher.dart';
 //import '../models/voucher_detail.dart';
@@ -116,7 +117,7 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 15),
-                _buildDetailRow(Icons.qr_code, 'Mã QR', voucher.detail?.qrcode ?? 'N/A'),
+                _buildDetailRow(Icons.qr_code, 'Mã QR', voucher.detail?.qrcode ?? 'N/A', isQR: true),
                 _buildDetailRow(Icons.monetization_on, 'Trị giá', voucher.trigia ?? 'N/A'),
                 _buildDetailRow(Icons.description, 'Mô tả', voucher.detail?.mota ?? 'N/A'),
                 _buildDetailRow(Icons.calendar_today, 'Ngày hết hạn', _formatDate(voucher.detail?.ngayhethan ?? DateTime.now())),
@@ -144,7 +145,7 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String label, String value) {
+  Widget _buildDetailRow(IconData icon, String label, String value, {bool isQR = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -161,10 +162,17 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
                   style: TextStyle(fontSize: 14, color: Colors.grey[600], fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 4),
-                Text(
-                  value,
-                  style: TextStyle(fontSize: 16),
-                ),
+                if (isQR && value != 'N/A')
+                  QrImageView(
+                    data: value,
+                    version: QrVersions.auto,
+                    size: 200.0,
+                  )
+                else
+                  Text(
+                    value,
+                    style: TextStyle(fontSize: 16),
+                  ),
               ],
             ),
           ),

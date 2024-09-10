@@ -54,6 +54,7 @@ dependencies:
   flutter_dotenv: any
   webview_flutter: any
   provider: ^6.1.2
+  qr_flutter: any
 
 dev_dependencies:
   flutter_test:
