@@ -219,7 +219,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     try {
       if (gameDetail != null) {
         switch (gameDetail.name.toLowerCase()) {
-          case "quiz":
+          case "quiz game":
             Get.to(() => QuizScreen(eventId: widget.eventId));
             break;
           case "click":

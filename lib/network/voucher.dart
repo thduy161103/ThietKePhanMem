@@ -14,7 +14,7 @@ class VoucherRequest {
       final token = prefs.getString('accessToken') ?? '';
 
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:5000/brand/api/voucher/allvoucher/'),
+        Uri.parse('${baseUrl}/brand/api/voucher/allvoucher/'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -41,7 +41,7 @@ class VoucherRequest {
       final token = prefs.getString('accessToken') ?? '';
 
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:5000/brand/api/voucher/voucherofevent/$eventId'),
+        Uri.parse('${baseUrl}/brand/api/voucher/voucherofevent/$eventId'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -158,7 +158,7 @@ class VoucherRequest {
       final token = prefs.getString('accessToken') ?? '';
 
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:5000/brand/api/voucher/detailvoucher/$voucherId'),
+        Uri.parse('${baseUrl}/brand/api/voucher/detailvoucher/$voucherId'),
         headers: {
           'Authorization': 'Bearer $token',
         },
