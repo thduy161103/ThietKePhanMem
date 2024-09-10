@@ -4,6 +4,8 @@ import 'package:musicapp/models/event_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/event.dart';
 import '../config/environment.dart';
+import 'dart:developer' as developer;
+import '../models/game_detail.dart';
 
 class EventRequest {
   static final String baseUrl = '${Environment.baseUrl}/brand/api/event/';
@@ -49,13 +51,64 @@ class EventRequest {
   }
 
   static Future<EventDetail> fetchEventDetail(String eventId) async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:5000/brand/api/event/detailevent/$eventId'));
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('accessToken') ?? '';
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      return EventDetail.fromJson(jsonData['events'][0]);
-    } else {
-      throw Exception('Failed to load event details');
+      final response = await http.get(
+        Uri.parse('${Environment.baseUrl}/brand/api/event/detailevent/$eventId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      developer.log('Response status code: ${response.statusCode}');
+      developer.log('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        developer.log('Decoded JSON: $jsonData');
+
+        if (jsonData['success'] == true && jsonData['events'] is List && jsonData['events'].isNotEmpty) {
+          return EventDetail.fromJson(jsonData['events'][0]);
+        } else {
+          developer.log('Event not found or unexpected data structure');
+          throw Exception('Event not found or unexpected data structure');
+        }
+      } else {
+        developer.log('Failed to load event details. Status code: ${response.statusCode}');
+        throw Exception('Failed to load event details. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      developer.log('Error in fetchEventDetail: $e');
+      throw Exception('Failed to load event details: $e');
+    }
+  }
+
+  static Future<GameDetail> fetchGameDetail(String gameId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('accessToken') ?? '';
+
+      final response = await http.get(
+        Uri.parse('${Environment.baseUrl}/games/$gameId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      developer.log('Game Detail Response status code: ${response.statusCode}');
+      developer.log('Game Detail Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        return GameDetail.fromJson(jsonData);
+      } else {
+        throw Exception('Failed to load game details. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      developer.log('Error in fetchGameDetail: $e');
+      throw Exception('Failed to load game details: $e');
     }
   }
 }

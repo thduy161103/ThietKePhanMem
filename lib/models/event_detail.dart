@@ -1,6 +1,6 @@
 class EventDetail {
-  final String idSuKien;
-  final String idThuongHieu;
+  final String idSukien;
+  final String idThuonghieu;
   final String idGame;
   final String tenSuKien;
   final String hinhAnh;
@@ -9,11 +9,10 @@ class EventDetail {
   final DateTime thoiGianBatDau;
   final DateTime thoiGianKetThuc;
   final String brandName;
-  final String gameName;
 
   EventDetail({
-    required this.idSuKien,
-    required this.idThuongHieu,
+    required this.idSukien,
+    required this.idThuonghieu,
     required this.idGame,
     required this.tenSuKien,
     required this.hinhAnh,
@@ -22,13 +21,12 @@ class EventDetail {
     required this.thoiGianBatDau,
     required this.thoiGianKetThuc,
     required this.brandName,
-    required this.gameName,
   });
 
   factory EventDetail.fromJson(Map<String, dynamic> json) {
     return EventDetail(
-      idSuKien: json['id_sukien'],
-      idThuongHieu: json['id_thuonghieu'],
+      idSukien: json['id_sukien'],
+      idThuonghieu: json['id_thuonghieu'],
       idGame: json['id_game'],
       tenSuKien: json['tensukien'],
       hinhAnh: json['hinhanh'],
@@ -37,7 +35,6 @@ class EventDetail {
       thoiGianBatDau: DateTime.parse(json['thoigianbatdau']),
       thoiGianKetThuc: DateTime.parse(json['thoigianketthuc']),
       brandName: json['brand_name'],
-      gameName: json['game_name'],
     );
   }
 }
