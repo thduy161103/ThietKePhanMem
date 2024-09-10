@@ -246,7 +246,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Voucher ID: ${voucher['id_voucher']}',
+                  'Voucher Name: ${voucher['tenvoucher']}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 
@@ -257,11 +257,11 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
               ],
             ),
             SizedBox(height: 8),
-            Text(
-                  'Voucher Name: ${voucher['tenvoucher']}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-            SizedBox(height: 8),
+            // Text(
+            //       'Voucher Name: ${voucher['tenvoucher']}',
+            //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            //     ),
+            // SizedBox(height: 8),
             Text(
                   'Event Name: ${voucher['tensukien']}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
