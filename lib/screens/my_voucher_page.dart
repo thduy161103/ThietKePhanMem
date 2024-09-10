@@ -58,6 +58,7 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
       for (var voucher in vouchers) {
         try {
           voucher.detail = await VoucherRequest.fetchVoucherDetail(voucher.idVoucher);
+          print("voucher.detail?.hinhanh: ${voucher.detail?.hinhanh}");
         } catch (e) {
           developer.log('Error fetching voucher detail: $e');
           // Xử lý lỗi nếu cần
@@ -93,20 +94,31 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (voucher.hinhanh != null)
+                if (voucher.detail?.hinhanh != null)
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      voucher.hinhanh!,
+                      voucher.detail!.hinhanh,
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
+                        print('Error loading image: $error');
                         return Container(
                           height: 200,
                           width: double.infinity,
                           color: Colors.grey[300],
                           child: Icon(Icons.error, size: 50, color: Colors.grey[600]),
+                        );
+                      },
+                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
                         );
                       },
                     ),
@@ -285,7 +297,7 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
                                   ClipRRect(
                                     borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                                     child: Image.network(
-                                      voucher.hinhanh ?? '',
+                                      voucher.detail?.hinhanh ?? '',
                                       height: 150,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
