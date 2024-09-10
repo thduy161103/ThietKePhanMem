@@ -27,7 +27,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
     super.initState();
     _vouchersFuture = VoucherRequest.fetchAllVoucher();
   }
-  void redeemVoucher(BuildContext context, String userId, String voucherId, int quantity, int point) async {
+  void redeemVoucher(BuildContext context, String userId, String voucherId, int quantity, int point, String eventId) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     String myPhoneNumber = userProvider.user!.phone;
     String? phoneNumber;
@@ -145,6 +145,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
     // Call VoucherRequest.updateVoucherAfterGame
     final result = await VoucherRequest.updateVoucherAfterGame(
       userId,
+      eventId,
       voucherId,
       quantity,
       point,
@@ -257,7 +258,17 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
             ),
             SizedBox(height: 8),
             Text(
-                  'Voucher Name: ${voucher['ten']}',
+                  'Voucher Name: ${voucher['tenvoucher']}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+            SizedBox(height: 8),
+            Text(
+                  'Event Name: ${voucher['tensukien']}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+            SizedBox(height: 8),
+            Text(
+                  'Amount: ${voucher['soluong']}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
             SizedBox(height: 8),
@@ -274,7 +285,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
             ElevatedButton(
               onPressed: () {
                 final userProvider = Provider.of<UserProvider>(context, listen: false);
-                redeemVoucher(context, userProvider.userId!, voucher['id_voucher'], 1, voucher['diem']);
+                redeemVoucher(context, userProvider.userId!, voucher['id_voucher'], 1, voucher['diem'], voucher['id_sukien']);
               },
               child: Text('Mua Voucher'),
               style: ElevatedButton.styleFrom(
@@ -301,7 +312,7 @@ class VoucherCard extends StatelessWidget {
   final String voucherName;
   final int diem;
   final Function(String, int) onRedeem;
- void redeemVoucher(BuildContext context,String userId, String voucherId, int quantity, int point) async {
+ void redeemVoucher(BuildContext context,String userId, String voucherId, int quantity, int point, String eventId) async {
     String? phoneNumber;
     bool? forSelf = await showDialog<bool>(
       context: context,
@@ -411,6 +422,7 @@ class VoucherCard extends StatelessWidget {
     // Call VoucherRequest.updateVoucherAfterGame
     final result = await VoucherRequest.updateVoucherAfterGame(
       userId,
+      eventId,
       voucherId,
       quantity,
       point,

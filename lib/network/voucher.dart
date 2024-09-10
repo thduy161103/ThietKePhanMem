@@ -14,7 +14,7 @@ class VoucherRequest {
       final token = prefs.getString('accessToken') ?? '';
 
       final response = await http.get(
-        Uri.parse('${baseUrl}/brand/api/voucher/allvoucher/'),
+        Uri.parse('${baseUrl}/brand/api/voucher/allvoucherevent'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -66,7 +66,7 @@ class VoucherRequest {
     }
   }
 
-  static Future<bool> updateVoucherAfterGame(String userId, String voucherId, int quantity, int diem, String phoneNumber) async {
+  static Future<bool> updateVoucherAfterGame(String userId, String eventId, String voucherId, int quantity, int diem, String phoneNumber) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('accessToken') ?? '';
@@ -84,6 +84,7 @@ class VoucherRequest {
         },
         body: jsonEncode({
           'voucher': voucherId,
+          'event': eventId,
           'quantity': quantity,
           'diem': diem,
           'targetPhone': phoneNumber
