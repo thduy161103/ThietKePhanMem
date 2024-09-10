@@ -8,7 +8,8 @@ import 'homepage.dart';
 
 class ClickApp extends StatefulWidget {
   final String eventId;
-  const ClickApp({Key? key, required this.eventId}) : super(key: key);
+  final String gameId;
+  const ClickApp({Key? key, required this.eventId, required this.gameId}) : super(key: key);
 
   @override
   _ClickAppState createState() => _ClickAppState();
@@ -83,7 +84,7 @@ class _ClickAppState extends State<ClickApp> with SingleTickerProviderStateMixin
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
     String userId = decodedToken['id'] as String;
 
-    bool success = await PointRequest.updatePoint(userId, _counter);
+    bool success = await PointRequest.updatePoint(userId, widget.gameId, widget.eventId, _counter, _counter);
     showDialog(
       context: context,
       barrierDismissible: false,

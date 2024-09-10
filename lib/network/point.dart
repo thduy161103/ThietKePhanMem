@@ -20,16 +20,19 @@ class PointRequest {
     }
   }
 
-  static Future<bool> updatePoint(String userId, int point) async {
+  static Future<bool> updatePoint(String userId, String gameId, String eventId, int scores, int point) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('accessToken') ?? '';
 
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/users/add-point'),
-        body: jsonEncode(<String, String>{
+        body: jsonEncode(<String, dynamic>{
           "id": userId,
-          "point": point.toString()
+          "gameId": gameId,
+          "eventId": eventId,
+          "scores": scores,
+          "point": point
 
         }),
         headers: <String, String>{

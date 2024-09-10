@@ -9,8 +9,9 @@ import '../screens/result_screen.dart';
 
 class QuestionController extends GetxController with SingleGetTickerProviderMixin {
   final String eventId;
+  final String gameId;
 
-  QuestionController({required this.eventId}) {
+  QuestionController({required this.eventId, required this.gameId}) {
     print("QuestionController initialized with eventId: $eventId");
   }
 
@@ -137,12 +138,12 @@ class QuestionController extends GetxController with SingleGetTickerProviderMixi
       _animationController.forward().whenComplete(() {
         if (_questionNumber.value == questions.length) {
           _animationController.stop();
-          Get.off(() => ResultScreen());
+          Get.off(() => ResultScreen(gameId: gameId, eventId: eventId));
         }
       });
     } else {
       _animationController.stop();
-      Get.off(() => ResultScreen());
+      Get.off(() => ResultScreen(gameId: gameId, eventId: eventId));
     }
   }
 

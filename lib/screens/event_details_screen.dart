@@ -220,13 +220,13 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       if (gameDetail != null) {
         switch (gameDetail.name.toLowerCase()) {
           case "quiz game":
-            Get.to(() => QuizScreen(eventId: widget.eventId));
+            Get.to(() => QuizScreen(eventId: widget.eventId, gameId: gameDetail.id));
             break;
           case "click":
-            Get.to(() => ClickApp(eventId: widget.eventId));
+            Get.to(() => ClickApp(eventId: widget.eventId, gameId: gameDetail.id));
             break;
           case "shake":
-            Get.to(() => ShakeApp(eventId: widget.eventId));
+            Get.to(() => ShakeApp(eventId: widget.eventId, gameId: gameDetail.id));
             break;
           case "trivia":
             String userId = await UserApi.getCurrentUserId();

@@ -12,6 +12,9 @@ import '../network/point.dart';
 
 
 class ResultScreen extends StatefulWidget {
+  final String gameId;
+  final String eventId;
+  const ResultScreen({Key? key, required this.gameId, required this.eventId}) : super(key: key);
   @override
   _ResultScreenState createState() => _ResultScreenState();
 }
@@ -44,7 +47,7 @@ class _ResultScreenState extends State<ResultScreen> {
     _earnedPoints = _qnController.numOfCorrectAns * 10; // Assuming 10 points per correct answer
 
     try {
-      bool success = await PointRequest.updatePoint(userId, _earnedPoints);
+      bool success = await PointRequest.updatePoint(userId, widget.gameId, widget.eventId, _earnedPoints, _earnedPoints);
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Đã cộng thêm $_earnedPoints điểm!')),

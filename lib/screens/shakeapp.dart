@@ -10,8 +10,8 @@ import 'homepage.dart';
 
 class ShakeApp extends StatefulWidget {
   final String eventId;
-
-  const ShakeApp({Key? key, required this.eventId}) : super(key: key);
+  final String gameId;
+  const ShakeApp({Key? key, required this.eventId, required this.gameId}) : super(key: key);
 
   @override
   State<ShakeApp> createState() => _ShakeAppState();
@@ -97,7 +97,7 @@ class _ShakeAppState extends State<ShakeApp> with SingleTickerProviderStateMixin
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
     String userId = decodedToken['id'] as String;
 
-    bool success = await PointRequest.updatePoint(userId, shakeCount);
+    bool success = await PointRequest.updatePoint(userId, widget.gameId, widget.eventId, shakeCount, shakeCount);
     showDialog(
       context: context,
       barrierDismissible: false,

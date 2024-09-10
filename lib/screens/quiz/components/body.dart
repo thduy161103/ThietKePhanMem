@@ -9,12 +9,13 @@ import 'question_card.dart';
 
 class Body extends StatelessWidget {
   final String eventId;
-  const Body({Key? key, required this.eventId}) : super(key: key) ;
+  final String gameId;
+  const Body({Key? key, required this.eventId, required this.gameId}) : super(key: key) ;
 
   @override
   Widget build(BuildContext context) {
     print("Building Body widget");
-    QuestionController _questionController = Get.put(QuestionController(eventId: eventId));
+    QuestionController _questionController = Get.put(QuestionController(eventId: eventId, gameId: gameId));
     return Stack(
       children: [
         Positioned.fill(

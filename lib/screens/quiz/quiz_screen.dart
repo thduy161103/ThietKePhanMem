@@ -6,8 +6,9 @@ import 'components/body.dart';
 
 class QuizScreen extends StatelessWidget {
   final String eventId;
+  final String gameId;
 
-  const QuizScreen({Key? key, required this.eventId}) : super(key: key);
+  const QuizScreen({Key? key, required this.eventId, required this.gameId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class QuizScreen extends StatelessWidget {
         elevation: 0,
         automaticallyImplyLeading: false, // This removes the back button
       ),
-      body: Body(eventId: eventId),
+      body: Body(eventId: eventId, gameId: gameId),
     );
   }
 }
