@@ -222,13 +222,13 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
           case "quiz game":
             Get.to(() => QuizScreen(eventId: widget.eventId, gameId: gameDetail.id));
             break;
-          case "click":
+          case "click game":
             Get.to(() => ClickApp(eventId: widget.eventId, gameId: gameDetail.id));
             break;
-          case "shake":
+          case "shake game":
             Get.to(() => ShakeApp(eventId: widget.eventId, gameId: gameDetail.id));
             break;
-          case "trivia":
+          case "trivia game":
             String userId = await UserApi.getCurrentUserId();
             String triviaUrl = 'http://10.0.2.2:6969/player?userId=$userId';
             Get.to(() => InAppBrowserScreen(url: triviaUrl));
