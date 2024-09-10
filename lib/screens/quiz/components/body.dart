@@ -36,7 +36,7 @@ class Body extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                    child: ProgressBar(),
+                    child: ProgressBar(gameId: gameId, eventId: eventId),
                   ),
                   SizedBox(height: kDefaultPadding),
                   Padding(

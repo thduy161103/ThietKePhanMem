@@ -7,8 +7,12 @@ import 'package:musicapp/controllers/question_controller.dart';
 import '../../../constants.dart';
 
 class ProgressBar extends StatelessWidget {
+  final String gameId;
+  final String eventId;
   const ProgressBar({
      Key ?key,
+     required this.gameId,
+     required this.eventId,
   }) : super(key: key);
 
   @override
@@ -21,7 +25,7 @@ class ProgressBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
       ),
       child: GetBuilder<QuestionController>(
-        init: QuestionController(eventId: ''),
+        init: QuestionController(eventId: eventId, gameId: gameId),
         builder: (controller) {
           return Stack(
             children: [
