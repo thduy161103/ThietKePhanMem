@@ -32,6 +32,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _initFuture = _initializeData();
+    _initFuture.then((data) {
+      if (data != null) {
+        _updateUserProvider(context, data);
+      }
+    });
   }
 
   Future<Map<String, dynamic>?> _initializeData() async {
@@ -63,6 +68,9 @@ class _HomePageState extends State<HomePage> {
 
       final events = await EventRequest.fetchEvents();
       developer.log('Fetched events: $events');
+
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.setUser(user);
 
       return {
         'userId': userId,
