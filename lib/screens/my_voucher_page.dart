@@ -130,10 +130,10 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
                 ),
                 SizedBox(height: 15),
                 _buildDetailRow(Icons.qr_code, 'Mã QR', voucher.detail?.qrcode ?? 'N/A', isQR: true),
-                _buildDetailRow(Icons.monetization_on, 'Trị giá', voucher.trigia ?? 'N/A'),
-                _buildDetailRow(Icons.description, 'Mô tả', voucher.detail?.mota ?? 'N/A'),
+                _buildDetailRow(Icons.monetization_on, 'Trị giá', voucher.detail?.trigia.toString() ?? 'N/A'),
+                //_buildDetailRow(Icons.description, 'Mô tả', voucher.detail?.mota ?? 'N/A'),
                 _buildDetailRow(Icons.calendar_today, 'Ngày hết hạn', _formatDate(voucher.detail?.ngayhethan ?? DateTime.now())),
-                _buildDetailRow(Icons.info_outline, 'Trạng thái', voucher.detail?.trangthai.toString() ?? 'N/A'),
+                //_buildDetailRow(Icons.info_outline, 'Trạng thái', voucher.detail?.trangthai.toString() ?? 'N/A'),
                 SizedBox(height: 20),
                 Align(
                   alignment: Alignment.center,
@@ -323,6 +323,11 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
                                           ),
                                         ),
                                         SizedBox(height: 8),
+                                          Text(
+                                            'Thương hiệu: ${voucher.detail!.brandName}',
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                        SizedBox(height: 8),
                                         Text(
                                           'Trị giá: ${voucher.detail?.trigia ?? 'N/A'}',
                                           style: TextStyle(
@@ -341,11 +346,7 @@ class _MyVoucherPageState extends State<MyVoucherPage> {
                                             'Hạn sử dụng: ${_formatDate(voucher.detail!.ngayhethan)}',
                                             style: TextStyle(fontSize: 14),
                                           ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            'Thương hiệu: ${voucher.detail!.brandName}',
-                                            style: TextStyle(fontSize: 14),
-                                          ),
+                                          
                                         ],
                                         SizedBox(height: 16),
                                         Row(
