@@ -27,6 +27,11 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
     super.initState();
     _vouchersFuture = VoucherRequest.fetchAllVoucher();
   }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
   void redeemVoucher(BuildContext context, String userId, String voucherId, int quantity, int point, String eventId) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     String myPhoneNumber = userProvider.user!.phone;
@@ -249,7 +254,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Voucher Name: ${voucher['tenvoucher']}',
+                  'Name: ${voucher['tenvoucher']}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 
@@ -266,7 +271,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
             //     ),
             // SizedBox(height: 8),
             Text(
-                  'Event Name: ${voucher['tensukien']}',
+                  'Event: ${voucher['tensukien']}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
             SizedBox(height: 8),
@@ -276,7 +281,7 @@ class _AllVouchersPageState extends State<AllVouchersPage> {
                 ),
             SizedBox(height: 8),
             Text(
-                  'Expired Day: ${voucher['ngayhethan']}',
+                  'Expired: ${_formatDate(DateTime.parse(voucher['ngayhethan']))}',
                   style: TextStyle(fontSize: 15),
                 ),
             SizedBox(height: 16),
@@ -468,12 +473,12 @@ class VoucherCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Voucher ID: $voucherId',
+              'ID: $voucherId',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
             Text(
-              'Voucher Name: $voucherName',
+              'Name: $voucherName',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
@@ -494,4 +499,7 @@ class VoucherCard extends StatelessWidget {
       ),
     );
   }
+
+
+  
 }
