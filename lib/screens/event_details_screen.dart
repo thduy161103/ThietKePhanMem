@@ -48,7 +48,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
           } else if (eventSnapshot.hasError) {
             return _buildErrorWidget(eventSnapshot.error);
           } else if (!eventSnapshot.hasData) {
-            return Center(child: Text('No data available'));
+            return Center(child: Text('Không có dữ liệu'));
           }
 
           final event = eventSnapshot.data!;
@@ -109,17 +109,17 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   Widget _buildEventDetails(EventDetail event, GameDetail? gameDetail) {
     return SliverList(
       delegate: SliverChildListDelegate([
-        _buildSection('Event Details', [
+        _buildSection('Chi tiết sự kiện', [
           _buildInfoRow(Icons.business, 'Thương hiệu', event.brandName),
           _buildInfoRow(Icons.card_giftcard, 'Số lượng voucher', event.soLuongVoucher.toString()),
-          _buildInfoRow(Icons.access_time, 'Bắt đầu', _formatDateTime(event.thoiGianBatDau)),
-          _buildInfoRow(Icons.access_time, 'Kết thúc', _formatDateTime(event.thoiGianKetThuc)),
+          _buildInfoRow(Icons.access_time, 'Bắt đầu', _formatDateTime(event.thoiGianBatDau.toLocal())),
+          _buildInfoRow(Icons.access_time, 'Kết thúc', _formatDateTime(event.thoiGianKetThuc.toLocal())),
         ]),
         if (gameDetail != null) ...[
-          _buildSection('Game Details', [
-            _buildInfoRow(Icons.games, 'Game', gameDetail.name),
-            _buildInfoRow(Icons.category, 'Game Type', gameDetail.type),
-            _buildInfoRow(Icons.info_outline, 'Instructions', gameDetail.instructions),
+          _buildSection('Chi tiết trò chơi', [
+            _buildInfoRow(Icons.games, 'Trò chơi', gameDetail.name),
+            _buildInfoRow(Icons.category, 'Loại trò chơi', gameDetail.type),
+            _buildInfoRow(Icons.info_outline, 'Hướng dẫn', gameDetail.instructions),
           ]),
         ],
         _buildSection('Mô tả', [
@@ -178,7 +178,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
         child: ElevatedButton.icon(
           onPressed: () => _onPlayButtonTapped(event, gameDetail),
           icon: Icon(Icons.play_arrow),
-          label: Text('Play Now'),
+          label: Text('Chơi ngay'),
           style: ElevatedButton.styleFrom(
             backgroundColor: primaryColor,
             foregroundColor: Colors.white,
@@ -197,14 +197,14 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Error: $error'),
+          Text('Lỗi: $error'),
           ElevatedButton(
             onPressed: () {
               setState(() {
                 _eventDetailFuture = EventRequest.fetchEventDetail(widget.eventId);
               });
             },
-            child: Text('Retry'),
+            child: Text('Thử lại'),
           ),
         ],
       ),
@@ -216,45 +216,62 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   }
 
   void _onPlayButtonTapped(EventDetail event, GameDetail? gameDetail) async {
-    developer.log("Play button tapped for event: ${event.tenSuKien}");
+    developer.log("Nút chơi được nhấn cho sự kiện: ${event.tenSuKien}");
     try {
+      if (DateTime.now().isBefore(event.thoiGianBatDau.toLocal())) {
+        Get.snackbar(
+          'Sự kiện chưa bắt đầu',
+          'Sự kiện bắt đầu vào: ${_formatDateTime(event.thoiGianBatDau.toLocal())}.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+      if (DateTime.now().isAfter(event.thoiGianKetThuc.toLocal())) {
+        Get.snackbar(
+          'Sự kiện đã kết thúc',
+          'Sự kiện kết thúc vào: ${_formatDateTime(event.thoiGianKetThuc.toLocal())}.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
       if (gameDetail != null) {
         switch (gameDetail.name.toLowerCase()) {
           case "quiz game":
             Get.to(() => QuizScreen(eventId: widget.eventId, gameId: gameDetail.id));
             break;
-          case "click game":
+          case "click spamming":
             Get.to(() => ClickApp(eventId: widget.eventId, gameId: gameDetail.id));
             break;
           case "shake game":
             Get.to(() => ShakeApp(eventId: widget.eventId, gameId: gameDetail.id));
             break;
-          case "trivia game":
+          case "trivia live game":
             String userId = await UserApi.getCurrentUserId();
             String accessToken = await UserApi.getAccessToken();
             String triviaUrl = 'http://10.0.2.2:6969/player?userId=$userId&eventId=${widget.eventId}&gameId=${gameDetail.id}&token=$accessToken';
             Get.to(() => InAppBrowserScreen(url: triviaUrl));
             break;
           default:
-            developer.log("Unsupported game type");
+            developer.log("Loại trò chơi không được hỗ trợ");
             Get.snackbar(
-              'Unsupported Game',
-              'This game type is not supported yet.',
+              'Trò chơi không được hỗ trợ',
+              'Loại trò chơi này chưa được hỗ trợ.',
               snackPosition: SnackPosition.BOTTOM,
             );
         }
       } else {
         Get.snackbar(
-          'Game Not Found',
-          'Unable to find game details.',
+          'Không tìm thấy trò chơi',
+          'Không thể tìm thấy chi tiết trò chơi.',
           snackPosition: SnackPosition.BOTTOM,
         );
       }
     } catch (e) {
-      developer.log('Error in _onPlayButtonTapped: $e');
+      developer.log('Lỗi trong _onPlayButtonTapped: $e');
       Get.snackbar(
-        'Error',
-        'Unable to start the game. Please try again later.',
+        'Lỗi',
+        'Không thể bắt đầu trò chơi. Vui lòng thử lại sau.',
         snackPosition: SnackPosition.BOTTOM,
       );
     }
