@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/event_detail.dart';
 import '../models/game_detail.dart';
 import '../network/events.dart';
